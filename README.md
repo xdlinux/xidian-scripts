@@ -41,7 +41,9 @@ Usage
 
 1. 手动执行
 2. 把get_pay_info.py加到shell启动脚本中
+	![](http://i.imgur.com/A227l.png)
 3. 结合grep查询指定科的成绩
+ 	![](http://i.imgur.com/h4iKJ.png)
 4. 自己定制啦:)
 
 
