@@ -12,6 +12,8 @@ xidian-scripts
 	* get_pay_info: 获得自己校园网流量使用情况
 	
 	* get_grades: 查询自己的成绩
+	
+	* get_xdoj_log: 批量下载xdoj上交过的代码
 
 	
 Setup
@@ -32,8 +34,9 @@ Setup
 
 4. 在get_xidian_news.py中的DAY输入你想获得最近几天的消息
 
-5. 没有第5步
+5. get_xdoj_log.py会将正确/错误代码分别下载到目录correct与wrong下，格式为{题目编号}\_{提交编号}.*
 
+6. 没有第6
 
 Usage
 -----
