@@ -7,7 +7,7 @@ import requests
 base = 'http://202.117.120.31/xdoj/'
 contests = []
 res = []
-regex_filename = r"<tr bgcolor=\"#[ef]{6}\">[\r\n\t]*[^`]*?<font color=(\w*)>[^`]*?download_source\('(\w*.cpp)'\)[^`]*?<\/tr>"
+regex_filename = r"<tr bgcolor=\"#[ef]{6}\">[\r\n\t]*[^`]*?<font color=(\w*)>[^`]*?download_source\('(\w*)'\)[^`]*?<\/tr>"
 regex_contest  = r"href='/xdoj/select_contest\?contest_id=([0-9]+)'"
 help_ = sys.argv[0]+': Must specify username and password for xdoj\n\tusage: python[3] '+sys.argv[0]+' {username} {password}'
 
