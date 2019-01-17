@@ -33,7 +33,7 @@ def make_data_and_cookies(r):
 
         if USE_TESSERACT == True:
             # write to the image file
-            with open(IMG_PATH, 'w') as f:
+            with open(IMG_PATH, 'wb') as f:
                 f.write(img.content)
 
             # using tesseract to get the vcode img value
