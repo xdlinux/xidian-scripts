@@ -5,5 +5,3 @@ HEADER = {
     "Accept-Encoding": "gzip, deflate",
     "Content-Type": "application/x-www-form-urlencoded"
 }
-REGEX_HIDDEN_TAG = '<input type="hidden" name="(.*)" value="(.*)"'
-REGEX_HTML_COMMENT = r'<!--\s*([\s\S]*?)\s*-->'

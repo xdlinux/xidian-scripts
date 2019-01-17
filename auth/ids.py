@@ -3,6 +3,8 @@ import re
 
 from auth.GLOBAL import *
 
+REGEX_HIDDEN_TAG = '<input type="hidden" name="(.*)" value="(.*)"'
+REGEX_HTML_COMMENT = r'<!--\s*([\s\S]*?)\s*-->'
 
 def get_login_session(target, username, password):
     ses = requests.session()
