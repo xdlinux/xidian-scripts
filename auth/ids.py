@@ -1,7 +1,7 @@
 import requests
 import re
 
-from ids.GLOBAL import *
+from auth.GLOBAL import *
 
 
 def get_login_session(target, username, password):
