@@ -1,0 +1,12 @@
+[
+    {
+        "service": "stuscescli",
+        "url": "https://schscesapi.xidian.edu.cn/api/v1/client/index/banner/list?params=%7B%22flag%22:1%7D",
+        "description": "八个一工程网页"
+    },
+    {
+        "service": "ehall",
+        "url": "http://ehall.xidian.edu.cn/new/index.html",
+        "description": "一站式服务中心"
+    }
+]

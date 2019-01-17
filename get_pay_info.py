@@ -1,80 +1,88 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import time
 import os
 import requests
 from lxml import html
+from PIL import Image
+from io import BytesIO
+from auth.GLOBAL import HEADER
 
-USERNAME = "your student no here"
-PASSOWORD = "your password"
+USE_TESSERACT = True
+USERNAME = "student id"
+PASSOWORD = "password"
 
-BASE_URL = "http://pay.xidian.edu.cn"
+BASE_URL = "https://pay.xidian.edu.cn"
 
-FORM_URL = "/servlet/login"
-PAY_INFO_URL = "/swyh/dyll.jsp"
+PAY_INFO_URL = "/home"
+LOGIN_URL = "/login"
 
 TMP_DIR = os.path.expanduser("~/.xidian/")
 IMG_PATH = os.path.join(TMP_DIR, "img.jpg")
 TEXT_PATH = os.path.join(TMP_DIR, "result.txt")
 
 
-def make_data_and_cookies():
+def make_data_and_cookies(r):
     """make the post data(including vcode) and get cookies"""
 
     vcode = ''
     while len(vcode) is not 4:
-        r = requests.get(BASE_URL)
-        doc = html.document_fromstring(r.text)
+        doc = html.document_fromstring(r.get(BASE_URL).text)
         vcode_link = doc.cssselect('form img')[0].get('src')
-        vcv = doc.cssselect('input[name="vcv"]')[0].get('value')
+        vcv = doc.cssselect('input[name="_csrf"]')[0].get('value')
         img_url = BASE_URL + vcode_link
-        img = requests.get(img_url)
+        img = ses.get(img_url)
 
-        # write to the image file
-        with open(IMG_PATH, 'w') as f:
-            f.write(img.content)
+        if USE_TESSERACT == True:
+            # write to the image file
+            with open(IMG_PATH, 'wb') as f:
+                f.write(img.content)
 
-        # using tesseract to get the vcode img value
-        os.popen('tesseract %s %s' % (IMG_PATH, TEXT_PATH[:-4]))
-        with open(TEXT_PATH) as f:
-            vcode = f.read().strip('\n')
+            # using tesseract to get the vcode img value
+            os.popen('tesseract %s %s' % (IMG_PATH, TEXT_PATH[:-4]))
+            with open(TEXT_PATH) as f:
+                vcode = f.read().strip('\n')
+        else:
+            img = Image.open(BytesIO(img.content)).convert('1')
+            img = img.resize((int(img.width*0.5),int(0.4*img.height)))
+            pt = img.load()
+            for y in range(0, img.height-4):
+                for x in range(img.width):
+                    print('▩' if pt[x, y] == 255 else ' ', end='')
+                print()
+            vcode = input('验证码：')
 
-    data = {
-            "account": USERNAME,
-            "password": PASSOWORD,
-            "vcode": vcode,
-            "vcv": vcv
-            }
-    return data, r.cookies
+    return {
+        "LoginForm[username]": USERNAME,
+        "LoginForm[password]": PASSOWORD,
+        "LoginForm[verifyCode]": vcode,
+        "_csrf": vcv,
+        "login-button": ""
+    }
 
 
-def submit_form(data, cookies):
-    """submit the login form so you're logined in"""
-    form_action_url = BASE_URL + FORM_URL
-    requests.post(form_action_url, data=data, cookies=cookies)
-
-
-def get_info(cookies):
+def get_info(ses):
     """retrieve the data using the cookies"""
     info_url = BASE_URL + PAY_INFO_URL
-    r = requests.get(info_url, cookies=cookies)
-    doc = html.document_fromstring(r.text)
-    used, rest = doc.cssselect('tr')
-    used_gb = float(used.findall('td')[1].text) / 1024
-    rest_gb = float(rest.findall('td')[1].text) / 1024
-    return used_gb, rest_gb
+    s = ses.get(info_url).text
+    doc = html.document_fromstring(s)
+    result = doc.cssselect('tr[data-key="14"]')[0]
+    
+    used = result.cssselect('td[data-col-seq="3"]')[0].text
+    rest = result.cssselect('td[data-col-seq="7"]')[0].text
+    return used, rest
 
 if __name__ == '__main__':
-    if not os.path.exists(TMP_DIR):
+    if USE_TESSERACT and not os.path.exists(TMP_DIR):
         os.mkdir(TMP_DIR)
     while True:
-        data, cookies = make_data_and_cookies()
-        submit_form(data, cookies)
-        time.sleep(1)
+        ses = requests.session()
+        ses.headers = HEADER
+        data = make_data_and_cookies(ses)
+        ses.post(BASE_URL+LOGIN_URL, data=data).text  # login
+        ses.get(BASE_URL)
         try:
-            result = get_info(cookies)
+            result = get_info(ses)
             break
         except:
+            ses.close()
             time.sleep(1)
-    print "此月已使用流量 %.2fGB, 剩余 %.2f GB" % (result)
+    print("此月已使用流量 %s , 剩余 %s " % (result))
