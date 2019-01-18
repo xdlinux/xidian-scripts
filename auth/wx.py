@@ -62,7 +62,7 @@ def _generate_uuid():
     return "web"+a[0]+a[1]
 
 
-def get_login_session(username, password) -> requests.Session:
+def get_login_session(username, password) -> Session:
     ses = Session()
     data = {
         'appKey': "GiITvn",
