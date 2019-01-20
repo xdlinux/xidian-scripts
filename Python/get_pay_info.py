@@ -5,19 +5,15 @@ from lxml import html
 from PIL import Image
 from io import BytesIO
 from auth.GLOBAL import HEADER
+import configurations, credentials
 
-USE_TESSERACT = True
-USERNAME = "student id"
-PASSOWORD = "password"
+USERNAME = credentials.PAY_USERNAME
+PASSOWORD = credentials.PAY_PASSWORD
 
 BASE_URL = "https://pay.xidian.edu.cn"
 
 PAY_INFO_URL = "/home"
 LOGIN_URL = "/login"
-
-TMP_DIR = os.path.expanduser("~/.xidian/")
-IMG_PATH = os.path.join(TMP_DIR, "img.jpg")
-TEXT_PATH = os.path.join(TMP_DIR, "result.txt")
 
 
 def make_data_and_cookies(r):
@@ -31,14 +27,14 @@ def make_data_and_cookies(r):
         img_url = BASE_URL + vcode_link
         img = ses.get(img_url)
 
-        if USE_TESSERACT == True:
+        if configurations.USE_TESSERACT == True:
             # write to the image file
-            with open(IMG_PATH, 'wb') as f:
+            with open(configurations.IMG_PATH, 'wb') as f:
                 f.write(img.content)
 
             # using tesseract to get the vcode img value
-            os.popen('tesseract %s %s' % (IMG_PATH, TEXT_PATH[:-4]))
-            with open(TEXT_PATH) as f:
+            os.popen('tesseract %s %s' % (configurations.IMG_PATH, configurations.TEXT_PATH[:-4]))
+            with open(configurations.TEXT_PATH) as f:
                 vcode = f.read().strip('\n')
         else:
             img = Image.open(BytesIO(img.content)).convert('1')
@@ -71,8 +67,8 @@ def get_info(ses):
     return used, rest
 
 if __name__ == '__main__':
-    if USE_TESSERACT and not os.path.exists(TMP_DIR):
-        os.mkdir(TMP_DIR)
+    if configurations.USE_TESSERACT and not os.path.exists(configurations.TMP_DIR):
+        os.mkdir(configurations.TMP_DIR)
     while True:
         ses = requests.session()
         ses.headers = HEADER
