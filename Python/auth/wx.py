@@ -74,7 +74,8 @@ def get_login_session(username, password) -> Session:
         'secure': 0
     }
     result = ses.post(BASE+'baseCampus/login/login.do', json=data).json()
-    # TODO:验证登录失败
+    if result['isConfirm'] != 1:
+        raise Exception('登录失败') # 请检查credentials.py
     ses.headers['token'] = result['token'][0]+'_'+result['token'][1]
     return ses
 
