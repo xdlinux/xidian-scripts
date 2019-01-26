@@ -55,14 +55,14 @@ if __name__ == '__main__':
                         event.add('summary', course_name + " @ " + course_classroom)
                         if day_2 < day_1 < day_3:
                             event.add('dtstart', datetime.strptime(
-                                course_day + " " + section_start_time_b[int(course_start_number)], "%Y-%m-%d %H:%M:%S"))
+                                course_day + " " + section_start_time_b[int(course_start_number)], "%Y-%m-%d %H:%M"))
                             event.add('dtend', datetime.strptime(
-                                course_day + " " + section_end_time_b[int(course_end_number)], "%Y-%m-%d %H:%M:%S"))
+                                course_day + " " + section_end_time_b[int(course_end_number)], "%Y-%m-%d %H:%M"))
                         else:
                             event.add('dtstart', datetime.strptime(
-                                course_day + " " + section_start_time_a[int(course_start_number)], "%Y-%m-%d %H:%M:%S"))
+                                course_day + " " + section_start_time_a[int(course_start_number)], "%Y-%m-%d %H:%M"))
                             event.add('dtend', datetime.strptime(
-                                course_day + " " + section_end_time_a[int(course_end_number)], "%Y-%m-%d %H:%M:%S"))
+                                course_day + " " + section_end_time_a[int(course_end_number)], "%Y-%m-%d %H:%M"))
                         cal.add_component(event)
         f = open(credentials.IDS_USERNAME + '_' + json_course["yearTerm"] + ".ics", 'wb')
         f.write(cal.to_ical())
