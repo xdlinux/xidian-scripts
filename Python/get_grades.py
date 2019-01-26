@@ -19,7 +19,6 @@ import auth.ids
 import json
 import credentials
 
-
 ses = auth.ids.get_login_session(
     'http://ehall.xidian.edu.cn:80//appShow', credentials.IDS_USERNAME, credentials.IDS_PASSWORD)
 
@@ -43,19 +42,22 @@ querySetting = [
 courses = {}
 
 for i in ses.post(
-    'http://ehall.xidian.edu.cn/jwapp/sys/cjcx/modules/cjcx/xscjcx.do',
-    data={
-        'querySetting=': json.dumps(querySetting),
-        '*order': 'KCH,KXH',# 按课程名，课程号排序
-        'pageSize': 1000, # 有多少整多少.jpg
-        'pageNumber': 1
-    }
+        'http://ehall.xidian.edu.cn/jwapp/sys/cjcx/modules/cjcx/xscjcx.do',
+        data={
+            'querySetting=': json.dumps(querySetting),
+            '*order': 'KCH,KXH',  # 按课程名，课程号排序
+            'pageSize': 1000,  # 有多少整多少.jpg
+            'pageNumber': 1
+        }
 ).json()['datas']['xscjcx']['rows']:
     if i['XNXQDM_DISPLAY'] not in courses.keys():
         courses[i['XNXQDM_DISPLAY']] = []
-    courses[i['XNXQDM_DISPLAY']].append((i['XSKCM'].strip(),str(i['ZCJ'])))
+    courses[i['XNXQDM_DISPLAY']].append((i['XSKCM'].strip(), str(i['ZCJ']), str(i['XFJD'])))
 
 for i in courses.keys():
-    print(i+':')
+    print(i + ':')
     for j in courses[i]:
-        print('\t'+j[0]+':'+j[1])
+        if j[2] == 'None':
+            print('\t' + j[0] + ': ' + j[1])
+        else:
+            print('\t' + j[0] + ': ' + j[1] + ' (' + j[2] + ')')
