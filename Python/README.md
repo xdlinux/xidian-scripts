@@ -22,3 +22,7 @@
 
 如果觉得手动执行不够程序员/黑客/苟(  
 你可以加到shell启动脚本里头鸭
+
+## License
+
+* [LGPL3.0+](https://ftp.gnu.org/gnu/Licenses/lgpl-3.0.txt)
