@@ -43,8 +43,7 @@ if __name__ == '__main__':
                 print(result["expenseList"][i][4]["dataValue"] + "\t" +
                       result["expenseList"][i][3]["dataValue"] + "\t" +
                       result["expenseList"][i][5]["dataValue"] + "\t" +
-                      str(int(result["expenseList"][i][2]["dataValue"]) / 100) +
-                      "\t")
+                      str(int(result["expenseList"][i][2]["dataValue"]) / 100))
             print()
             print("继续查询请按回车，否则请关闭...")
             input()
