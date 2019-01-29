@@ -11,6 +11,7 @@
 * get_xdoj_log: 把你在202.117.120.31/xdoj上交过的代码都扒拉下来
 * get_grades: 看看你考了多少分
 * export_timetable: 把当前学期课表保存为iCalendar(.ics)格式，这样就能导入到日历软件中
+* get_card_balance: 查询一卡通余额和指定时间段（30天内）的消费记录
 
 ## 该怎么用？
 
