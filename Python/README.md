@@ -16,7 +16,7 @@
 ## 该怎么用？
 
 1. Python3
-1. 一些依赖：requests, lxml, Pillow, json, icalendar, [tesseract](https://github.com/tesseract-ocr/tesseract/wiki)  
+1. 一些依赖：requests, lxml, Pillow, icalendar, [tesseract](https://github.com/tesseract-ocr/tesseract/wiki)  
 1. 重命名文件： configurations.sample.py -> configurations.py credentials.sample.py -> credentials.py
 1. 根据自己需要更改配置文件： configurations.py, credentials.py 
 1. 跑起来：python3 [文件名]
