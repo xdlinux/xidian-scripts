@@ -114,3 +114,5 @@ venv.bak/
 .DS_Store
 
 test.py
+credentials.py
+configurations.py
