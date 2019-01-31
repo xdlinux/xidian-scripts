@@ -9,7 +9,6 @@ if __name__ == '__main__':
     data = {
         "appKey": "GiITvn",
         "param": "{}",
-        "time": auth.utils.timestamp(),
         "secure": 0
     }
     result = ses.post(auth.wx.BASE + 'infoCampus/playCampus/getAllPurposeCard.do', json=data).json()
