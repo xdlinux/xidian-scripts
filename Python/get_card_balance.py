@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 if __name__ == '__main__':
-    ses = auth.wx.get_login_session(credentials.IDS_USERNAME, credentials.IDS_PASSWORD)
+    ses = auth.wx.get_login_session(credentials.WX_USERNAME, credentials.WX_PASSWORD)
     data = {
         "appKey": "GiITvn",
         "param": "{}",
@@ -27,7 +27,6 @@ if __name__ == '__main__':
                          '\"offset\":1,'
                          '\"cardNo\":null}}'.format(datetime.strptime(start_date, "%Y-%m-%d").strftime("%Y-%m-%d"),
                                                     datetime.strptime(end_date, "%Y-%m-%d").strftime("%Y-%m-%d")),
-                "time": auth.utils.timestamp(),
                 "secure": 0
             }
             result = ses.post(auth.wx.BASE + 'infoCampus/playCampus/getExpenseRecords.do', json=data).json()
