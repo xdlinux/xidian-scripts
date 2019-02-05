@@ -22,31 +22,29 @@ from datetime import datetime
 
 
 if __name__ == '__main__':
-    ses = auth.wx.get_login_session(credentials.WX_USERNAME, credentials.WX_PASSWORD)
-    data = {
-        "appKey": "GiITvn",
-        "param": "{}",
-        "secure": 0
-    }
-    result = ses.post(auth.wx.BASE + 'infoCampus/playCampus/getAllPurposeCard.do', json=data).json()
-    print("一卡通余额: " + str(int(result["allPurposeCardVO"]["cardGeneralInfo"][0]["value"]) / 100) + " 元")
+    ses = auth.wx.get_login_session(
+        credentials.WX_USERNAME, credentials.WX_PASSWORD)
+    result = ses.post(
+        auth.wx.BASE + 'infoCampus/playCampus/getAllPurposeCard.do',
+        param={}
+    ).json()
+    print("一卡通余额: " + str(int(result["allPurposeCardVO"]
+                              ["cardGeneralInfo"][0]["value"]) / 100) + " 元")
     print("继续查询消费记录请按回车，否则请关闭...")
     input()
     print("查询时间跨度不能超过 30 天。")
     while True:
         start_date = input("请输入开始时间 (格式: 年-月-日): ")
-        end_date = input("请输入开始时间 (格式: 年-月-日): ")
+        end_date = input("请输入结束时间 (格式: 年-月-日): ")
         if (datetime.strptime(end_date, "%Y-%m-%d") - datetime.strptime(start_date, "%Y-%m-%d")).days <= 30:
-            data = {
-                "appKey": "GiITvn",
-                "param": '{{\"startDate\":\"{}\",'
-                         '\"endDate\":\"{}\",'
-                         '\"offset\":1,'
-                         '\"cardNo\":null}}'.format(datetime.strptime(start_date, "%Y-%m-%d").strftime("%Y-%m-%d"),
-                                                    datetime.strptime(end_date, "%Y-%m-%d").strftime("%Y-%m-%d")),
-                "secure": 0
-            }
-            result = ses.post(auth.wx.BASE + 'infoCampus/playCampus/getExpenseRecords.do', json=data).json()
+            param = '{{\"startDate\":\"{}\",' + \
+                '\"endDate\":\"{}\",' + \
+                '\"offset\":1,' + \
+                '\"cardNo\":null}}'
+            param = param.format(datetime.strptime(start_date, "%Y-%m-%d").strftime(
+                "%Y-%m-%d"), datetime.strptime(end_date, "%Y-%m-%d").strftime("%Y-%m-%d"))
+            result = ses.post(
+                auth.wx.BASE + 'infoCampus/playCampus/getExpenseRecords.do', param=param).json()
             if len(result["expenseList"]) == 0:
                 print("指定的时间段内没有消费记录。")
                 print()
@@ -66,4 +64,3 @@ if __name__ == '__main__':
         else:
             print("查询时间跨度不能超过 30 天。")
             print()
-

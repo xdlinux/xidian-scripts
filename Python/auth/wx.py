@@ -54,8 +54,14 @@ class Session: # 封装requests.Session
             'Access-Control-Request-Method': 'POST'
         })
 
-    def post(self, url, data=None, json=None, headers=None):
+    def post(self, url, data=None, json=None, headers=None, param=None):
         self.options(url)
+        if param is not None:
+            json = {
+                'appKey': "GiITvn",
+                'param': param,
+                'secure': 0
+            }
         if json is not None:
             json['time']=auth.utils.timestamp() # 先后顺序
             json['sign'] = self._dump_sign(json)  # 数据签名在生成时间戳之后
