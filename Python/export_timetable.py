@@ -19,12 +19,11 @@ from icalendar import Calendar, Event
 from datetime import timedelta
 from datetime import datetime
 import auth.ids
+import configurations
 import credentials
 
 TIMETABLE_URL = "https://xidian.cpdaily.com/comapp-timetable/sys/schoolTimetable/v2/api/weekTimetable"
 
-START_YEAR = 2018  # Time when a school year starts
-END_YEAR = 2019  # Time when a school year ends
 END_MONTH = 5  # Month when timetable is changed in summer
 END_DAY = 2  # Day when timetable is changed in summer
 # Use for ehall data source
@@ -62,28 +61,21 @@ if __name__ == '__main__':
         else:
             allteachweeks = result["allTeachWeeks"]
             cal = Calendar()
-            for current_week in range(allteachweeks):
-                for current_day in range(7):
-                    if len(result["termWeeksCourse"][current_week]["courses"][current_day]["sectionCourses"]) != 0:
-                        for current_course in range(
-                                len(result["termWeeksCourse"][current_week]["courses"][current_day]["sectionCourses"])):
-                            course_day = result["termWeeksCourse"][current_week]["courses"][current_day]["date"]
-                            course_name = \
-                                result["termWeeksCourse"][current_week]["courses"][current_day]["sectionCourses"][
-                                    current_course]["courseName"]
-                            course_classroom = \
-                                result["termWeeksCourse"][current_week]["courses"][current_day]["sectionCourses"][
-                                    current_course]["classroom"]
-                            course_start_number = \
-                                result["termWeeksCourse"][current_week]["courses"][current_day]["sectionCourses"][
-                                    current_course]["sectionStart"]
-                            course_end_number = \
-                                result["termWeeksCourse"][current_week]["courses"][current_day]["sectionCourses"][
-                                    current_course]["sectionEnd"]
+            for current_week in result["termWeeksCourse"]:
+                for current_day in current_week["courses"]:
+                    if len(current_day["sectionCourses"]) != 0:
+                        course_day = current_day["date"]
+                        for current_course in current_day["sectionCourses"]:
+                            course_name = current_course["courseName"]
+                            course_classroom = current_course["classroom"]
+                            course_start_number = current_course["sectionStart"]
+                            course_end_number = current_course["sectionEnd"]
                             event = Event()
                             day_1 = datetime.strptime(course_day, "%Y-%m-%d")  # Course day
-                            day_2 = datetime(START_YEAR, 10, 8)  # Semester 1
-                            day_3 = datetime(END_YEAR, END_MONTH, END_DAY)  # Semester 2
+                            day_2 = datetime(
+                                configurations.SCHOOL_YEAR[0], 10, 8)  # Semester 1
+                            day_3 = datetime(
+                                configurations.SCHOOL_YEAR[1], END_MONTH, END_DAY)  # Semester 2
                             event.add("description", course_name + " @ " + course_classroom)
                             event.add("summary", course_name + " @ " + course_classroom)
                             if day_2 < day_1 < day_3:
@@ -124,8 +116,8 @@ if __name__ == '__main__':
                     course_end_number = i["JSJC"]
                     event = Event()
                     day_1 = course_day  # Course day
-                    day_2 = datetime(START_YEAR, 10, 8)  # Semester 1
-                    day_3 = datetime(END_YEAR, END_MONTH, END_DAY)  # Semester 2
+                    day_2 = datetime(configurations.SCHOOL_YEAR[0], 10, 8)  # Semester 1
+                    day_3 = datetime(configurations.SCHOOL_YEAR[1], END_MONTH, END_DAY)  # Semester 2
                     event.add("description", course_name + " @ " + course_classroom)
                     event.add("summary", course_name + " @ " + course_classroom)
                     if day_2 < day_1 < day_3:
