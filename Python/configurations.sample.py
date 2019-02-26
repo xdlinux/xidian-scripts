@@ -20,7 +20,12 @@ import os
 USE_TESSERACT = False
 # 是否用tesseract识别验证码，默认为否
 
+# tesseract
 TMP_DIR = os.path.expanduser("~/.xidian/")
 IMG_PATH = os.path.join(TMP_DIR, "img.jpg")
 TEXT_PATH = os.path.join(TMP_DIR, "result.txt")
-# tesseract
+
+# export_timetable
+USE_LATEST_SEMESTER = True  # 自动获取学期学年信息, 若为True, 可以不填写下方配置项
+SCHOOL_YEAR = (2018, 2019)  # 学年度
+SEMESTER = '2'              # 学期
