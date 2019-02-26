@@ -26,6 +26,21 @@ courseList = []
 TERM_START_DAY = datetime(2019, 2, 25)
 semesterCode = ''
 
+MORNING_TIME = [
+    ("8:30", "10:05"),
+    ("10:25", "12:00")
+]
+SUMMER_TIME = MORNING_TIME+[
+    ("14:30", "16:05"),
+    ("16:25", "18:00"),
+    ("19:30", "21:05")
+]
+WINTER_TIME = MORNING_TIME+[
+    ("14:00", "15:35"),
+    ("15:55", "17:30"),
+    ("19:00", "20:35")
+]
+
 def get_courses_from_dcampus():
     global semesterCode, courseList
     courseList.clear()
@@ -48,28 +63,14 @@ def get_courses_from_dcampus():
                     'name': Class['courseName'],
                     'location': Class['classroom'],
                     'sectionSpan': (
-                        qResult['schedules'][Class['sectionStart']-1]['start'],
-                        qResult['schedules'][Class['sectionEnd']-1]['end']
+                        Class['sectionStart'],
+                        Class['sectionEnd']
                     )
                 })
 
 def get_courses_from_ehall():
     global semesterCode, courseList
     courseList.clear()
-    MORNING_TIME = [
-        ("8:30", "10:05"),
-        ("10:25", "12:00")
-    ]
-    SUMMER_TIME = MORNING_TIME+[
-        ("14:30", "16:05"),
-        ("16:25", "18:00"),
-        ("19:30", "21:05")
-    ]
-    WINTER_TIME = MORNING_TIME+[
-        ("14:00", "15:35"),
-        ("15:55", "17:30"),
-        ("19:00", "20:35")
-    ]
     # 换校历的话可能要改, 不换就没事
     ses = auth.ids.get_login_session(
         'http://ehall.xidian.edu.cn:80//appShow', 
@@ -113,11 +114,7 @@ def get_courses_from_ehall():
                 courseList[j][int(i['SKXQ'])-1].append({
                     'name': i['KCM'],
                     'location': i['JASMC'],
-                    'sectionSpan': 
-                        SUMMER_TIME[int(int(i['JSJC'])/2)-1] 
-                        if semesterCode[-1] == '1' else 
-                        WINTER_TIME[int(int(i['JSJC'])/2)-1]
-                        # semesterCode[-1] == '2'
+                    'sectionSpan': (int(i['KSJC']), int(i['JSJC']))
                 })
 
 source = input("请选择数据来源 (1/2):\n1. 今日校园\n2. 一站式服务大厅\n>")
@@ -138,9 +135,13 @@ for week_cnt in range(len(courseList)):
             )
             e.add('summary', course['name']+'@'+course['location'])
 
-            date = TERM_START_DAY + timedelta(days=week_cnt*7+day_cnt) # 从第一 周的第一天起
-            beginTime = course['sectionSpan'][0].split(':')
-            endTime = course['sectionSpan'][1].split(':')
+            date = TERM_START_DAY + \
+                timedelta(days=week_cnt*7+day_cnt)  # 从第一 周的第一天起
+            (beginTime, endTime) = \
+                SUMMER_TIME[int(course['sectionSpan'][1]/2-1)] if\
+                date.month >= 5 and date.month < 10 else \
+                WINTER_TIME[int(course['sectionSpan'][1]/2-1)]
+            (beginTime, endTime) = (beginTime.split(':'), endTime.split(':'))
 
             e.add(
                 "dtstart",
