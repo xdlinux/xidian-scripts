@@ -20,26 +20,25 @@ from datetime import datetime, timedelta
 import auth.ids
 import configurations
 import credentials
-import sys
 
 courseList = []
-TERM_START_DAY = datetime(2019, 2, 25)
 semesterCode = ''
 
 MORNING_TIME = [
     ("8:30", "10:05"),
     ("10:25", "12:00")
 ]
-SUMMER_TIME = MORNING_TIME+[
+SUMMER_TIME = MORNING_TIME + [
     ("14:30", "16:05"),
     ("16:25", "18:00"),
     ("19:30", "21:05")
 ]
-WINTER_TIME = MORNING_TIME+[
+WINTER_TIME = MORNING_TIME + [
     ("14:00", "15:35"),
     ("15:55", "17:30"),
     ("19:00", "20:35")
 ]
+
 
 def get_courses_from_dcampus():
     global semesterCode, courseList
@@ -53,7 +52,7 @@ def get_courses_from_dcampus():
     if qResult['code'] != '0':
         raise Exception(qResult['message'])
     semesterCode = qResult['yearTerm']
-    #allTeachWeeks = qResult['allTeachWeeks'] #教学周数
+    # allTeachWeeks = qResult['allTeachWeeks'] #教学周数
     for week in qResult['termWeeksCourse']:
         courseList.append([])
         t = courseList[-1]
@@ -68,12 +67,13 @@ def get_courses_from_dcampus():
                     )
                 })
 
+
 def get_courses_from_ehall():
     global semesterCode, courseList
     courseList.clear()
     # 换校历的话可能要改, 不换就没事
     ses = auth.ids.get_login_session(
-        'http://ehall.xidian.edu.cn:80//appShow', 
+        'http://ehall.xidian.edu.cn:80//appShow',
         credentials.IDS_USERNAME,
         credentials.IDS_PASSWORD
     )
@@ -88,10 +88,17 @@ def get_courses_from_ehall():
                 'Accept': 'application/json, text/javascript, */*; q=0.01'
             }
         ).json()['datas']['dqxnxq']['rows'][0]['DM']
+        global termStartDay
+        termStartDay = datetime.strptime(ses.post(
+            'http://ehall.xidian.edu.cn/jwapp/sys/wdkb/modules/jshkcb/cxjcs.do',
+            headers={
+                'Accept': 'application/json, text/javascript, */*; q=0.01'
+            }
+        ).json()['datas']['cxjcs']['rows'][0]["XQKSRQ"].split(' ')[0], '%Y-%m-%d')
     else:
-        semesterCode =\
-            str(configurations.SCHOOL_YEAR[0])+'-' +\
-            str(configurations.SCHOOL_YEAR[1])+'-' +\
+        semesterCode = \
+            str(configurations.SCHOOL_YEAR[0]) + '-' + \
+            str(configurations.SCHOOL_YEAR[1]) + '-' + \
             str(configurations.SEMESTER)
     qResult = ses.post(
         'http://ehall.xidian.edu.cn/jwapp/sys/wdkb/modules/xskcb/xskcb.do',
@@ -108,14 +115,15 @@ def get_courses_from_ehall():
 
     for i in qResult['rows']:
         while len(courseList) < len(i['SKZC']):
-            courseList.append([[],[],[],[],[],[],[]])
+            courseList.append([[], [], [], [], [], [], []])
         for j in range(len(i['SKZC'])):
             if i['SKZC'][j] == '1':
-                courseList[j][int(i['SKXQ'])-1].append({
+                courseList[j][int(i['SKXQ']) - 1].append({
                     'name': i['KCM'],
                     'location': i['JASMC'],
                     'sectionSpan': (int(i['KSJC']), int(i['JSJC']))
                 })
+
 
 source = input("请选择数据来源 (1/2):\n1. 今日校园\n2. 一站式服务大厅\n>")
 if source == '1':
@@ -130,17 +138,17 @@ for week_cnt in range(len(courseList)):
             e = Event()
             e.add(
                 "description",
-                '课程名称：'+course['name']+
-                ';上课地点：'+course['location']
+                '课程名称：' + course['name'] +
+                ';上课地点：' + course['location']
             )
-            e.add('summary', course['name']+'@'+course['location'])
+            e.add('summary', course['name'] + '@' + course['location'])
 
-            date = TERM_START_DAY + \
-                timedelta(days=week_cnt*7+day_cnt)  # 从第一 周的第一天起
+            date = termStartDay + \
+                   timedelta(days=week_cnt * 7 + day_cnt)  # 从第一 周的第一天起
             (beginTime, endTime) = \
-                SUMMER_TIME[int(course['sectionSpan'][1]/2-1)] if\
-                date.month >= 5 and date.month < 10 else \
-                WINTER_TIME[int(course['sectionSpan'][1]/2-1)]
+                SUMMER_TIME[int(course['sectionSpan'][1] / 2 - 1)] if \
+                    date.month >= 5 and date.month < 10 else \
+                    WINTER_TIME[int(course['sectionSpan'][1] / 2 - 1)]
             (beginTime, endTime) = (beginTime.split(':'), endTime.split(':'))
 
             e.add(
