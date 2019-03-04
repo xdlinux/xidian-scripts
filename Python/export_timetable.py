@@ -93,6 +93,10 @@ def get_courses_from_ehall():
             'http://ehall.xidian.edu.cn/jwapp/sys/wdkb/modules/jshkcb/cxjcs.do',
             headers={
                 'Accept': 'application/json, text/javascript, */*; q=0.01'
+            },
+            data={
+                'XN': semesterCode.split('-')[0] + '-' + semesterCode.split('-')[1],
+                'XQ': semesterCode.split('-')[2]
             }
         ).json()['datas']['cxjcs']['rows'][0]["XQKSRQ"].split(' ')[0], '%Y-%m-%d')
     else:
