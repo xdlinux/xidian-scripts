@@ -140,6 +140,10 @@ for week_cnt in range(len(courseList)):
     for day_cnt in range(len(courseList[week_cnt])):
         for course in courseList[week_cnt][day_cnt]:
             e = Event()
+            if course['sectionSpan'][0] > 10 :
+                continue
+            elif course['location'] == None:
+                course['location'] = '待定'
             e.add(
                 "description",
                 '课程名称：' + course['name'] +
