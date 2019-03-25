@@ -52,7 +52,7 @@ def get_courses_from_dcampus():
     if qResult['code'] != '0':
         raise Exception(qResult['message'])
     semesterCode = qResult['yearTerm']
-    # allTeachWeeks = qResult['allTeachWeeks'] #教学周数
+    allTeachWeeks = qResult['allTeachWeeks'] #教学周数
     for week in qResult['termWeeksCourse']:
         courseList.append([])
         t = courseList[-1]
@@ -80,7 +80,7 @@ def get_courses_from_ehall():
     ses.get('http://ehall.xidian.edu.cn//appShow?appId=4770397878132218', headers={
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
     })
-
+	
     if configurations.USE_LATEST_SEMESTER:
         semesterCode = ses.post(
             'http://ehall.xidian.edu.cn/jwapp/sys/wdkb/modules/jshkcb/dqxnxq.do',
@@ -88,22 +88,25 @@ def get_courses_from_ehall():
                 'Accept': 'application/json, text/javascript, */*; q=0.01'
             }
         ).json()['datas']['dqxnxq']['rows'][0]['DM']
-        global termStartDay
-        termStartDay = datetime.strptime(ses.post(
-            'http://ehall.xidian.edu.cn/jwapp/sys/wdkb/modules/jshkcb/cxjcs.do',
-            headers={
-                'Accept': 'application/json, text/javascript, */*; q=0.01'
-            },
-            data={
-                'XN': semesterCode.split('-')[0] + '-' + semesterCode.split('-')[1],
-                'XQ': semesterCode.split('-')[2]
-            }
-        ).json()['datas']['cxjcs']['rows'][0]["XQKSRQ"].split(' ')[0], '%Y-%m-%d')
+        
     else:
         semesterCode = \
             str(configurations.SCHOOL_YEAR[0]) + '-' + \
             str(configurations.SCHOOL_YEAR[1]) + '-' + \
-            str(configurations.SEMESTER)
+            str(configurations.SEMESTER);
+
+    global termStartDay
+    termStartDay = datetime.strptime(ses.post(
+        'http://ehall.xidian.edu.cn/jwapp/sys/wdkb/modules/jshkcb/cxjcs.do',
+        headers={
+            'Accept': 'application/json, text/javascript, */*; q=0.01'
+        },
+        data={
+            'XN': semesterCode.split('-')[0] + '-' + semesterCode.split('-')[1],
+            'XQ': semesterCode.split('-')[2]
+        }
+    ).json()['datas']['cxjcs']['rows'][0]["XQKSRQ"].split(' ')[0], '%Y-%m-%d')			
+	
     qResult = ses.post(
         'http://ehall.xidian.edu.cn/jwapp/sys/wdkb/modules/xskcb/xskcb.do',
         headers={  # 学生课程表
