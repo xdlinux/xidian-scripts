@@ -75,8 +75,6 @@ def get_info(ses):
 
 
 if __name__ == '__main__':
-    if configurations.USE_TESSERACT and not os.path.exists(configurations.TMP_DIR):
-        os.mkdir(configurations.TMP_DIR)
     while True:
         ses = requests.session()
         ses.headers = HEADER
