@@ -15,11 +15,10 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
-import time
-import os
+import re
+import bs4
 import requests
 import pytesseract
-from lxml import html
 from PIL import Image
 from io import BytesIO
 from auth.GLOBAL import HEADER
@@ -37,14 +36,14 @@ LOGIN_URL = "/login"
 def make_data_and_cookies(r):
     vcode = ''
     while len(vcode) is not 4:
-        doc = html.document_fromstring(r.get(BASE_URL).text)
-        vcode_link = doc.cssselect('form img')[0].get('src')
-        vcv = doc.cssselect('input[name="_csrf"]')[0].get('value')
-        img_url = BASE_URL + vcode_link
+        soup = bs4.BeautifulSoup(r.get(BASE_URL).text, "lxml")
+        img_url = BASE_URL + soup.find('img', id='loginform-verifycode-image').get('src')
+        vcv = soup.find('input', type='hidden').get('value')
         img = Image.open(BytesIO(ses.get(img_url).content))
         if configurations.USE_TESSERACT:
-            vcode = pytesseract.image_to_string(img)
-            # print(vcode)
+            # 使用了自定义的语言数据
+            vcode = pytesseract.image_to_string(img, lang='ar', config="--psm 7 digits")
+            print(vcode)
         else:
             img = img.convert('1')
             img = img.resize((int(img.width * 0.5), int(0.4 * img.height)))
@@ -66,12 +65,29 @@ def make_data_and_cookies(r):
 def get_info(ses):
     """retrieve the data using the cookies"""
     info_url = BASE_URL + PAY_INFO_URL
-    s = ses.get(info_url).text
-    doc = html.document_fromstring(s)
-    result = doc.cssselect('tr[data-key="14"]')[0]
-    used = result.cssselect('td[data-col-seq="3"]')[0].text
-    rest = result.cssselect('td[data-col-seq="7"]')[0].text
-    return used, rest
+    ip_list = []
+    used = ""
+    rest = ""
+    charged = ""
+    filt = re.compile(r'>(.*)<')
+    soup = bs4.BeautifulSoup(ses.get(info_url).text, 'lxml')
+    tr_list = soup.find_all('tr')
+    for tr in tr_list:
+        td_list = bs4.BeautifulSoup(str(tr), 'lxml').find_all('td')
+        if len(td_list) == 0:
+            continue
+        elif len(td_list) == 4:
+            ip = filt.search(str(td_list[0])).group(1)
+            online_time = filt.search(str(td_list[1])).group(1)
+            used_t = filt.search(str(td_list[2])).group(1)
+            if used_t == '':
+                continue
+            ip_list.append((ip, online_time, used_t))
+        elif len(td_list) == 6:
+            used = filt.search(str(td_list[1])).group(1)
+            rest = filt.search(str(td_list[2])).group(1)
+            charged = filt.search(str(td_list[3])).group(1)
+    return ip_list, used, rest, charged
 
 
 if __name__ == '__main__':
@@ -82,9 +98,11 @@ if __name__ == '__main__':
         ses.post(BASE_URL + LOGIN_URL, data=data)  # login
         ses.get(BASE_URL)
         try:
-            result = get_info(ses)
+            ip_list, used, rest, charged = get_info(ses)
             break
         except:
             ses.close()
-            time.sleep(1)
-    print("此月已使用流量 %s , 剩余 %s " % (result))
+    for ip_info in ip_list:
+        print(ip_info)
+    print("此月已使用流量 %s , 剩余 %s , 充值剩余 %s" % (used, rest, charged))
+
