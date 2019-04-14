@@ -1,0 +1,17 @@
+asn1crypto==0.24.0
+cryptography==2.1.4
+enum34==1.1.6
+genpac==2.1.0
+gyp==0.1
+idna==2.6
+ipaddress==1.0.17
+keyring==10.6.0
+keyrings.alt==3.0
+M2Crypto==0.27.0
+pycrypto==2.6.1
+pygobject==3.26.1
+pyxdg==0.25
+SecretStorage==2.3.1
+shadowsocks==2.9.0
+six==1.11.0
+typing==3.6.2
