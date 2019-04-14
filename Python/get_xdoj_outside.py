@@ -72,9 +72,7 @@ def get_status(sess, top=''):
 
 def get_code(sess, url, status, problem_id, sid):
     # print(url, status, id, sid)
-    # code_page = sess.get(base + url).text
-    with open('pic.html', 'r') as file:
-        code_page = file.read()
+    code_page = sess.get(base + url).text
     code_re_res = re.search(r'<option value=\d selected>(.*?)</option>', code_page, re.S)
     code_type = code_re_res.group(1).strip().lower()
     code_type = 'cpp' if code_type == 'c++' else code_type
