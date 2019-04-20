@@ -41,8 +41,12 @@ def make_data_and_cookies(r):
         vcv = soup.find('input', type='hidden').get('value')
         img = Image.open(BytesIO(ses.get(img_url).content))
         if configurations.USE_TESSERACT:
-            # 使用了自定义的语言数据
-            vcode = pytesseract.image_to_string(img, lang='ar', config="--psm 7 digits")
+            try:
+                # 使用了自定义的语言数据
+                vcode = pytesseract.image_to_string(img, lang='ar', config="--psm 7 digits")
+            except:
+                # 针对没有添加自定义的训练数据的情况
+                vcode = pytesseract.image_to_string(img)
             print(vcode)
         else:
             img = img.convert('1')
@@ -105,4 +109,3 @@ if __name__ == '__main__':
     for ip_info in ip_list:
         print(ip_info)
     print("此月已使用流量 %s , 剩余 %s , 充值剩余 %s" % (used, rest, charged))
-
