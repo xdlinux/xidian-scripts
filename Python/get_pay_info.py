@@ -46,7 +46,7 @@ def make_data_and_cookies(r):
                 vcode = pytesseract.image_to_string(img, lang='ar', config="--psm 7 digits")
             except:
                 # 针对没有添加自定义的训练数据的情况
-                vcode = pytesseract.image_to_string(img)
+                vcode = pytesseract.image_to_string(img, config="--psm 7 digits")
             print(vcode)
         else:
             img = img.convert('1')
