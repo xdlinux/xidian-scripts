@@ -41,3 +41,9 @@ PAY_USERNAME = STUDENT_ID
 # pay.xidian.edu.cn
 
 PAY_PASSWORD = ''
+
+PHYSICS_USERNAME = STUDENT_ID
+# Username for physics experiment system(wlsy.xidian.edu.cn). Normally it is your student id.
+
+PHYSICS_PASSWORD = ''
+# Password for physics experiment system
