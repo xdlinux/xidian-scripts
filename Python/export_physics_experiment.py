@@ -77,4 +77,4 @@ for exp in expList:
 f = open(credentials.IDS_USERNAME + '_physicsExperiment.ics', 'wb')
 f.write(cal.to_ical())
 f.close()
-print("日历文件已保存到 " + credentials.IDS_USERNAME + '_physicsExperiment.ics')
+print("物理实验日历文件已保存到 " + credentials.IDS_USERNAME + '_physicsExperiment.ics')
