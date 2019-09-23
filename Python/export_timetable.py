@@ -124,7 +124,7 @@ def get_courses_from_ehall():
         while len(courseList) < len(i['SKZC']):
             courseList.append([[], [], [], [], [], [], []])
         for j in range(len(i['SKZC'])):
-            if i['SKZC'][j] == '1':
+            if i['SKZC'][j] == '1' and int(i['KSJC']) <= 10 and int(i['JSJC']) <= 10:
                 courseList[j][int(i['SKXQ']) - 1].append({
                     'name': i['KCM'],
                     'location': i['JASMC'],

@@ -9,14 +9,15 @@
 
 ## Manifest file
 
-* get_pay_info: 看看你的10G流量还有多少
+* get_pay_info: 看看你的 10G 流量还有多少
 * get_unreturned_books: 看看你还有哪些书没还
-* get_xdoj_log: 把你在202.117.120.31/xdoj上交过的代码都扒拉下来
-* get_xdoj_outside: 把你在`acm.xidian.edu.cn`上交过的代码都扒拉下来
+* get_xdoj_log: 把你在 `202.117.120.31/xdoj` 上交过的代码都扒拉下来
+* get_xdoj_outside: 把你在 `acm.xidian.edu.cn` 上交过的代码都扒拉下来
 * get_grades: 看看你考了多少分
-* export_timetable: 把当前学期课表保存为iCalendar(.ics)格式，这样就能导入到日历软件中。注意修改第二学期作息更换日期 END_MONTH 和 END_DAY。对于一站式服务大厅数据源，还需要设置学期开始日期 TERM_START_DAY
+* export_timetable: 把当前学期课表保存为 iCalendar(.ics) 格式，这样就能导入到日历软件中。注意修改第二学期作息更换日期 END_MONTH 和 END_DAY。对于一站式服务大厅数据源，还需要设置学期开始日期 TERM_START_DAY
 * get_card_balance: 查询一卡通余额
 * query_card_bill: 查询一卡通在指定时间段（30天内）的消费记录
+* export_physics_experiment.py: 将当前学期的物理实验保存为 iCalendar(.ics) 格式，这样就能导入到日历软件中。注意只能在校园网或翼讯环境下使用
 
 ## 该怎么用？
 
