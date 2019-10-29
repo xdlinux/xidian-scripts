@@ -18,6 +18,7 @@
 * get_card_balance: 查询一卡通余额
 * query_card_bill: 查询一卡通在指定时间段（30天内）的消费记录
 * export_physics_experiment.py: 将当前学期的物理实验保存为 iCalendar(.ics) 格式，这样就能导入到日历软件中。注意只能在校园网或翼讯环境下使用
+* get_electricity_balance: 查询电量余额，只能在内网使用，需要chromedriver和tesseract
 
 ## 该怎么用？
 
@@ -32,6 +33,7 @@
 ## 备注
 
 1. 为正常使用脚本，请务必按照credentials.sample.py与configurations.sample.py仔细填写credentials.py与configurations.py。
+
 1. 使用Python2有可能能正常使用大部分的功能，然而在编码的过程中不会考虑能否在Python2上正常运行。再者，python2在2020年1月1日起不再维护，pip也会停止对py2的支持。如果你还在用Python2的话赶紧换到py3吧。
 1. get_xdoj_log仅能获取开放的题目的你自己的提交记录。但是如果你对代码进行一点小小的魔改的话，你不仅能获取到自己的所有提交记录，还能把所有人交过的所有代码都爬下来。
 
