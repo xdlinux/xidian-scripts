@@ -27,7 +27,7 @@ import configurations, credentials
 USERNAME = credentials.PAY_USERNAME
 PASSOWORD = credentials.PAY_PASSWORD
 
-BASE_URL = "https://pay.xidian.edu.cn"
+BASE_URL = "https://zfw.xidian.edu.cn"
 
 PAY_INFO_URL = "/home"
 LOGIN_URL = "/login"
