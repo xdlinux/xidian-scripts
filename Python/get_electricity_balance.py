@@ -14,7 +14,7 @@ import sys
 import configurations, credentials
 
 USERNAME = credentials.ELECTRICITY_USERNAME
-PASSOWORD = credentials.ELECTRICITY_PASSWORD
+PASSWORD = credentials.ELECTRICITY_PASSWORD
 
 if len(sys.path[0])==0:
     cwd=os.getcwd()
