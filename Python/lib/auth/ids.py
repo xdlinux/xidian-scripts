@@ -15,14 +15,30 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
-from auth.wx import get_login_session
-import credentials
+import requests
+import re
 
-x = get_login_session(credentials.WX_USERNAME, credentials.WX_PASSWORD)
+from lib.auth.GLOBAL import *
 
-print('尚未还的书:')
-for i in x.post(
-    'http://202.117.121.7:8080/oaCampus/library/getReturn.do',
-    param={"offset": 1}
-).json()['list']:
-    print('《'+i['title']+'》'+'应当在'+i['returnDate']+'之前还')
+REGEX_HIDDEN_TAG = '<input type="hidden" name="(.*)" value="(.*)"'
+REGEX_HTML_COMMENT = r'<!--\s*([\s\S]*?)\s*-->'
+
+def get_login_session(target, username, password):
+    ses = requests.session()
+    ses.headers = HEADER
+    page = ses.get(
+        'http://ids.xidian.edu.cn/authserver/login',
+        params={'service': target}
+    ).text
+    page = re.sub(REGEX_HTML_COMMENT,'',page)
+    params = {i[0]: i[1] for i in re.findall(REGEX_HIDDEN_TAG, page)}
+    ses.post(
+        'http://ids.xidian.edu.cn/authserver/login',
+        params={'service': target},
+        data=dict(params,**{
+            'username': username,
+            'password': password
+        })
+    )
+    return ses
+

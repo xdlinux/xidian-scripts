@@ -15,11 +15,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
-import auth.ids
+import lib.auth.ids
 import json
 import credentials
 
-ses = auth.ids.get_login_session(
+ses = lib.auth.ids.get_login_session(
     'http://ehall.xidian.edu.cn:80//appShow', credentials.IDS_USERNAME, credentials.IDS_PASSWORD)
 
 ses.get('http://ehall.xidian.edu.cn//appShow?appId=4768574631264620', headers={
