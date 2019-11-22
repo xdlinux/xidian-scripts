@@ -23,6 +23,18 @@
 * export_timetable: 把当前学期课表保存为`.ics`格式，以便导入到日历软件中。
 * export_physics_experiment.py: 将当前学期的物理实验保存为`.ics`格式，以便导入到日历软件中。注意只能在校园网或翼讯环境下使用
 * query_card_bill: 查询一卡通在指定时间段（30天内）的消费记录
+* export_physics_experiment.py: 将当前学期的物理实验保存为 iCalendar(.ics) 格式，这样就能导入到日历软件中。注意只能在校园网或翼讯环境下使用
+* get_electricity_balance: 查询电量余额，只能在内网使用
+
+## 该怎么用？
+
+1. 请使用Python3(而不是Python2)
+1. 安装依赖：执行`pip3 install -r requirements.txt`  
+1. 重命名文件： 
+    - configurations.sample.py -> configurations.py
+    - credentials.sample.py -> credentials.py
+1. 根据自己需要更改配置文件： `configurations.py`, `credentials.py`
+1. 跑起来：python3 [文件名]
 
 ## 备注
 
