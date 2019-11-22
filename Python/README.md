@@ -18,6 +18,7 @@
 * get_card_balance: 查询一卡通余额
 * query_card_bill: 查询一卡通在指定时间段（30天内）的消费记录
 * export_physics_experiment.py: 将当前学期的物理实验保存为 iCalendar(.ics) 格式，这样就能导入到日历软件中。注意只能在校园网或翼讯环境下使用
+* get_electricity_balance: 查询电量余额，只能在内网使用
 
 ## 该怎么用？
 
