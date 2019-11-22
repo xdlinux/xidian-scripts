@@ -15,16 +15,16 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
-import auth.wx
+import lib.auth.wx
 import credentials
 from datetime import datetime
 
 
 if __name__ == '__main__':
-    ses = auth.wx.get_login_session(
+    ses = lib.auth.wx.get_login_session(
         credentials.WX_USERNAME, credentials.WX_PASSWORD)
     result = ses.post(
-        auth.wx.BASE + 'infoCampus/playCampus/getAllPurposeCard.do',
+        lib.auth.wx.BASE + 'infoCampus/playCampus/getAllPurposeCard.do',
         param={}
     ).json()
     print("一卡通余额: " + str(int(result["allPurposeCardVO"]
