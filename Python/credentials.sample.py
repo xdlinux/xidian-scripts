@@ -49,7 +49,8 @@ PHYSICS_PASSWORD = ''
 # Password for physics experiment system
 
 ELECTRICITY_USERNAME = ''
-# Username for electricty system(http://10.168.55.50:8088/).A query tool: https://github.com/Hoooxz/xd-charge 
+# Username for electricty system(http://10.168.55.50:8088/).
+# 查询工具: https://github.com/Hoooxz/xd-charge 
 
-ELECTRICITY_PASSWORD = ''
+ELECTRICITY_PASSWORD = '123456'
 # Password for electricty system. Default value is 123456

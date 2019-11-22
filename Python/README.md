@@ -15,30 +15,20 @@
 
 ## Manifest file
 
-* get_network_usage: 看看你的 10G 流量还有多少
 * get_borrowed_books: 看看你借过哪些书
-* get_xdoj_outside: 把你在 `acm.xidian.edu.cn` 上交过的代码都扒拉下来
-* get_grades: 看看你考了多少分
 * get_card_balance: 查询一卡通余额
+* get_electricity_balance*: 查询电量余额
+* get_grades: 看看你考了多少分
+* get_network_usage: 看看你的 10G 流量还有多少
+* get_xdoj_outside: 把你在 `acm.xidian.edu.cn` 上交过的代码都扒拉下来
 * export_timetable: 把当前学期课表保存为`.ics`格式，以便导入到日历软件中。
-* export_physics_experiment.py: 将当前学期的物理实验保存为`.ics`格式，以便导入到日历软件中。注意只能在校园网或翼讯环境下使用
+* export_physics_experiment.py*: 将当前学期的物理实验保存为`.ics`格式，以便导入到日历软件中。
 * query_card_bill: 查询一卡通在指定时间段（30天内）的消费记录
-* export_physics_experiment.py: 将当前学期的物理实验保存为 iCalendar(.ics) 格式，这样就能导入到日历软件中。注意只能在校园网或翼讯环境下使用
-* get_electricity_balance: 查询电量余额，只能在内网使用
-
-## 该怎么用？
-
-1. 请使用Python3(而不是Python2)
-1. 安装依赖：执行`pip3 install -r requirements.txt`  
-1. 重命名文件： 
-    - configurations.sample.py -> configurations.py
-    - credentials.sample.py -> credentials.py
-1. 根据自己需要更改配置文件： `configurations.py`, `credentials.py`
-1. 跑起来：python3 [文件名]
 
 ## 备注
 
 1. 如果你安装了tesseract，脚本理论上能自动启用tesseract进行验证码识别
+1. 标*号的脚本只能在西电内网使用
 
 ## 关于tesseract的使用
 
