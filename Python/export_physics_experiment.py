@@ -19,15 +19,13 @@ from icalendar import Calendar, Event
 from datetime import datetime, timedelta
 import requests
 import re
-import configurations
 import credentials
 
 expList = []
 
 
 def get_experiments():
-    global semesterCode, expList
-    expList.clear()
+    expList = []
     ses = requests.session()
     ses.post('http://wlsy.xidian.edu.cn/PhyEws/default.aspx',
              data={
@@ -58,10 +56,11 @@ def get_experiments():
         expDate = exp[8]
         expClassroom = exp[9]
         expList.append([expName, expStart, expEnd, expDate, expClassroom])
+    return expList
 
 
 source = input("请确保当前处于校园网或翼讯网络环境下，回车继续...")
-get_experiments()
+expList = get_experiments()
 cal = Calendar()
 for exp in expList:
     e = Event()

@@ -21,50 +21,49 @@ import requests
 import pytesseract
 from PIL import Image
 from io import BytesIO
-from auth.GLOBAL import HEADER
-import configurations, credentials
+from lib.auth.GLOBAL import HEADER
+import lib.config as config
+import lib.utils as utils
+import credentials
 
 USERNAME = credentials.PAY_USERNAME
 PASSOWORD = credentials.PAY_PASSWORD
 
 BASE_URL = "https://zfw.xidian.edu.cn"
 
-PAY_INFO_URL = "/home"
-LOGIN_URL = "/login"
 
-
-def make_data_and_cookies(r):
+def login(r):
     vcode = ''
     while len(vcode) is not 4:
         soup = bs4.BeautifulSoup(r.get(BASE_URL).text, "lxml")
-        img_url = BASE_URL + soup.find('img', id='loginform-verifycode-image').get('src')
+        img_url = BASE_URL + \
+            soup.find('img', id='loginform-verifycode-image').get('src')
         vcv = soup.find('input', type='hidden').get('value')
         img = Image.open(BytesIO(ses.get(img_url).content))
-        if configurations.USE_TESSERACT:
+        if config.USE_TESSERACT:
             # 使用了自定义的语言数据
-            vcode = pytesseract.image_to_string(img, lang='ar', config="--psm 7 digits")
-            print(vcode)
+            res, vcode = utils.try_get_vcode(img)
         else:
-            img = img.convert('1')
-            img = img.resize((int(img.width * 0.5), int(0.4 * img.height)))
-            pt = img.load()
-            for y in range(0, img.height - 4):
-                for x in range(img.width):
-                    print('*' if pt[x, y] == 255 else ' ', end='')
-                print()
-            vcode = input('验证码：')
-    return {
-        "LoginForm[username]": USERNAME,
-        "LoginForm[password]": PASSOWORD,
-        "LoginForm[verifyCode]": vcode,
-        "_csrf": vcv,
-        "login-button": ""
-    }
+            vcode = utils.prompt_vcode(img)
+    try:
+        if re.findall(
+            r'请修复以下错误<\/p><ul><li>(.*?)<',
+            r.post(BASE_URL + '/login', data={
+                "LoginForm[username]": USERNAME,
+                "LoginForm[password]": PASSOWORD,
+                "LoginForm[verifyCode]": vcode,
+                "_csrf": vcv,
+                "login-button": ""
+            }).text
+        )[0] == '验证码不正确。':
+            login(r)
+    except:
+        pass
 
 
 def get_info(ses):
     """retrieve the data using the cookies"""
-    info_url = BASE_URL + PAY_INFO_URL
+    info_url = BASE_URL + '/home'
     ip_list = []
     used = ""
     rest = ""
@@ -91,18 +90,13 @@ def get_info(ses):
 
 
 if __name__ == '__main__':
-    while True:
+    try:
         ses = requests.session()
         ses.headers = HEADER
-        data = make_data_and_cookies(ses)
-        ses.post(BASE_URL + LOGIN_URL, data=data)  # login
-        ses.get(BASE_URL)
-        try:
-            ip_list, used, rest, charged = get_info(ses)
-            break
-        except:
-            ses.close()
-    for ip_info in ip_list:
-        print(ip_info)
-    print("此月已使用流量 %s , 剩余 %s , 充值剩余 %s" % (used, rest, charged))
-
+        login(ses)
+        ip_list, used, rest, charged = get_info(ses)
+        for ip_info in ip_list:
+            print(ip_info)
+        print("此月已使用流量 %s , 剩余 %s , 充值剩余 %s" % (used, rest, charged))
+    except:
+        ses.close()

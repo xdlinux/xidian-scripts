@@ -15,10 +15,19 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
 
-USE_TESSERACT = False
-# 是否用tesseract识别验证码，默认为否
+try:
+    USE_TESSERACT = True
+    import os
+    import lib.utils as utils
+    from PIL import Image
+    assert(utils.try_get_vcode(
+        Image.open(os.path.join(
+            os.path.expanduser('~'), 
+            '.xidian_scripts', 'config', 'captcha.png'
+        )))[1] == '2238')
+except:
+    USE_TESSERACT = False
 
 # export_timetable
 USE_LATEST_SEMESTER = True  # 自动获取学期学年信息, 若为True, 可以不填写下方配置项
