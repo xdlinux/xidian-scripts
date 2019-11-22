@@ -20,11 +20,14 @@ import json
 import re
 import credentials
 
+USERNAME = credentials.ELECTRICITY_USERNAME
+PASSWORD = credentials.ELECTRICITY_PASSWORD
+
 login_page = requests.get("http://10.168.55.50:8088/searchWap/Login.aspx")
 cookies_login=login_page.cookies
 post_data={
-    "webName":ELECTRICITY_USERNAME,
-    "webPass":ELECTRICITY_PASSWORD
+    "webName":USERNAME,
+    "webPass":PASSWORD
 }
 
 HEADER = {
@@ -42,4 +45,4 @@ pattern_name = re.compile('表名称：(.*?)  ',re.S)
 name=re.findall(pattern_name,balance_page.text)
 pattern_balance = re.compile('剩余量：(.*?) </td>',re.S)
 balance=re.findall(pattern_balance,balance_page.text)
-print("电费账号：",ELECTRICITY_USERNAME,"\n","表名称：",name[0],"剩余量：",float(balance[0]))
+print("电费账号：",USERNAME,"\n","表名称：",name[0],"剩余量：",float(balance[0]))
