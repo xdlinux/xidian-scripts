@@ -17,10 +17,14 @@
 
 from icalendar import Calendar, Event
 from datetime import datetime, timedelta
-import lib.auth.ids
-import lib.config as configurations
-import credentials
-
+from libxduauth import EhallSession
+try:
+    import credentials
+    USERNAME = credentials.IDS_USERNAME
+    PASSWORD = credentials.IDS_PASSWORD
+except ImportError:
+    import os
+    USERNAME, PASSWORD = [os.getenv(i) for i in ('IDS_USER', 'IDS_PASS')]
 
 MORNING_TIME = [
     ("8:30", "10:05"),
@@ -37,29 +41,16 @@ WINTER_TIME = MORNING_TIME + [
     ("19:00", "20:35")
 ]
 
+ses = EhallSession(USERNAME, PASSWORD)
+ses.use_app(4770397878132218)
 
-courseList = []
-# 换校历的话可能要改, 不换就没事
-ses = lib.auth.ids.get_login_session(
-    'http://ehall.xidian.edu.cn:80//appShow',
-    credentials.IDS_USERNAME,
-    credentials.IDS_PASSWORD
-)
-ses.get('http://ehall.xidian.edu.cn//appShow?appId=4770397878132218', headers={
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-})
-if configurations.USE_LATEST_SEMESTER:
-    semesterCode = ses.post(
-        'http://ehall.xidian.edu.cn/jwapp/sys/wdkb/modules/jshkcb/dqxnxq.do',
-        headers={
-            'Accept': 'application/json, text/javascript, */*; q=0.01'
-        }
-    ).json()['datas']['dqxnxq']['rows'][0]['DM']
-else:
-    semesterCode = \
-        str(configurations.SCHOOL_YEAR[0]) + '-' + \
-        str(configurations.SCHOOL_YEAR[1]) + '-' + \
-        str(configurations.SEMESTER)
+
+semesterCode = ses.post(
+    'http://ehall.xidian.edu.cn/jwapp/sys/wdkb/modules/jshkcb/dqxnxq.do',
+    headers={
+        'Accept': 'application/json, text/javascript, */*; q=0.01'
+    }
+).json()['datas']['dqxnxq']['rows'][0]['DM']
 termStartDay = datetime.strptime(ses.post(
     'http://ehall.xidian.edu.cn/jwapp/sys/wdkb/modules/jshkcb/cxjcs.do',
     headers={
@@ -82,6 +73,8 @@ qResult = ses.post(
 qResult = qResult['datas']['xskcb']  # 学生课程表
 if qResult['extParams']['code'] != 1:
     raise Exception(qResult['extParams']['msg'])
+
+courseList = []
 for i in qResult['rows']:
     while len(courseList) < len(i['SKZC']):
         courseList.append([[], [], [], [], [], [], []])

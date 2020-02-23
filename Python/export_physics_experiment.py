@@ -19,7 +19,14 @@ from icalendar import Calendar, Event
 from datetime import datetime, timedelta
 import requests
 import re
-import credentials
+try:
+    import credentials
+    USERNAME = credentials.PHYSICS_USERNAME
+    PASSWORD = credentials.PHYSICS_PASSWORD
+except ImportError:
+    import os
+    USERNAME = os.getenv('PHYSICS_USER')
+    PASSWORD = os.getenv('PHYSICS_PASS')
 
 expList = []
 
@@ -34,8 +41,8 @@ def get_experiments():
                  '__VIEWSTATE': '/wEPDwUKMTEzNzM0MjM0OWQYAQUeX19Db250cm9sc1JlcXVpcmVQb3N0QmFja0tleV9fFgEFD2xvZ2luMSRidG5Mb2dpbutGpJNAAaBhxseXkh1n/woLBppW',
                  '__VIEWSTATEGENERATOR': 'EE008CD9',
                  '__EVENTVALIDATION': '/wEWBwLsvJu+AgKckJOGDgKD8YXRCQLJ5dDDBAKVx8n1CQKytMi0AQKcg465CqDdcB40IuBzviNuzXl4xNRdD759',
-                 'login1$StuLoginID': credentials.PHYSICS_USERNAME,
-                 'login1$StuPassword': credentials.PHYSICS_PASSWORD,
+                 'login1$StuLoginID': USERNAME,
+                 'login1$StuPassword': PASSWORD,
                  'login1$UserRole': 'Student',
                  'login1$btnLogin.x': '0',
                  'login1$btnLogin.y': '0'

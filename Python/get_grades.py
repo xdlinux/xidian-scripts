@@ -15,16 +15,20 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
-import lib.auth.ids
 import json
-import credentials
+from libxduauth import EhallSession
+try:
+    import credentials
+    USERNAME = credentials.IDS_USERNAME
+    PASSWORD = credentials.IDS_PASSWORD
+except ImportError:
+    import os
+    USERNAME, PASSWORD = [os.getenv(i) for i in ('IDS_USER', 'IDS_PASS')]
 
-ses = lib.auth.ids.get_login_session(
-    'http://ehall.xidian.edu.cn:80//appShow', credentials.IDS_USERNAME, credentials.IDS_PASSWORD)
-
-ses.get('http://ehall.xidian.edu.cn//appShow?appId=4768574631264620', headers={
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-})
+ses = EhallSession(
+    credentials.IDS_USERNAME, credentials.IDS_PASSWORD
+)
+ses.use_app(4768574631264620)
 
 querySetting = [
     {  # 学期
@@ -52,7 +56,8 @@ for i in ses.post(
 ).json()['datas']['xscjcx']['rows']:
     if i['XNXQDM_DISPLAY'] not in courses.keys():
         courses[i['XNXQDM_DISPLAY']] = []
-    courses[i['XNXQDM_DISPLAY']].append((i['XSKCM'].strip(), str(i['ZCJ']), str(i['XFJD'])))
+    courses[i['XNXQDM_DISPLAY']].append(
+        (i['XSKCM'].strip(), str(i['ZCJ']), str(i['XFJD'])))
 
 for i in courses.keys():
     print(i + ':')

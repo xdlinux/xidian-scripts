@@ -16,54 +16,21 @@
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
 import re
-import bs4
-import requests
-import pytesseract
-from PIL import Image
-from io import BytesIO
-from lib.auth.GLOBAL import HEADER
-import lib.config as config
-import lib.utils as utils
 import credentials
+from libxduauth import ZFWSession
+import bs4
 
-USERNAME = credentials.PAY_USERNAME
-PASSOWORD = credentials.PAY_PASSWORD
-
-BASE_URL = "https://zfw.xidian.edu.cn"
-
-
-def login(r):
-    vcode = ''
-    while len(vcode) is not 4:
-        soup = bs4.BeautifulSoup(r.get(BASE_URL).text, "lxml")
-        img_url = BASE_URL + \
-            soup.find('img', id='loginform-verifycode-image').get('src')
-        vcv = soup.find('input', type='hidden').get('value')
-        img = Image.open(BytesIO(ses.get(img_url).content))
-        if config.USE_TESSERACT:
-            # 使用了自定义的语言数据
-            res, vcode = utils.try_get_vcode(img)
-        else:
-            vcode = utils.prompt_vcode(img)
-    try:
-        if re.findall(
-            r'请修复以下错误<\/p><ul><li>(.*?)<',
-            r.post(BASE_URL + '/login', data={
-                "LoginForm[username]": USERNAME,
-                "LoginForm[password]": PASSOWORD,
-                "LoginForm[verifyCode]": vcode,
-                "_csrf": vcv,
-                "login-button": ""
-            }).text
-        )[0] == '验证码不正确。':
-            login(r)
-    except:
-        pass
+try:
+    import credentials
+    USERNAME = credentials.PAY_USERNAME
+    PASSWORD = credentials.PAY_PASSWORD
+except:
+    import os
+    USERNAME, PASSWORD = [os.getenv(i) for i in ('PAY_USER', 'PAY_PASS')]
 
 
 def get_info(ses):
-    """retrieve the data using the cookies"""
-    info_url = BASE_URL + '/home'
+    info_url = ses.BASE + '/home'
     ip_list = []
     used = ""
     rest = ""
@@ -91,9 +58,7 @@ def get_info(ses):
 
 if __name__ == '__main__':
     try:
-        ses = requests.session()
-        ses.headers = HEADER
-        login(ses)
+        ses = ZFWSession(USERNAME, PASSWORD)
         ip_list, used, rest, charged = get_info(ses)
         for ip_info in ip_list:
             print(ip_info)

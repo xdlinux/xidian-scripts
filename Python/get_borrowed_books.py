@@ -15,10 +15,16 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
-from lib.auth.wx import get_login_session
-import credentials
+from libxduauth import WXSession
+try:
+    import credentials
+    USERNAME, PASSWORD = credentials.WX_USERNAME, credentials.WX_PASSWORD
+except ImportError:
+    import os
+    USERNAME = os.getenv('WX_USER') or os.getenv('IDS_USER') or os.getenv('STUDENT_ID')
+    PASSWORD = os.getenv('WX_PASS') or os.getenv('IDS_PASS')
 
-x = get_login_session(credentials.WX_USERNAME, credentials.WX_PASSWORD)
+x = WXSession(USERNAME, PASSWORD)
 
 print('借过的书:')
 for i in x.post(

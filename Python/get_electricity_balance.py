@@ -18,37 +18,25 @@
 import requests
 import json
 import re
-import credentials
 
-USERNAME = credentials.ELECTRICITY_USERNAME
-PASSWORD = credentials.ELECTRICITY_PASSWORD
+try:
+    import credentials
+    USERNAME, PASSWORD = credentials.ELECTRICITY_USERNAME, credentials.ELECTRICITY_PASSWORD
+except ImportError:
+    import os
+    USERNAME = os.getenv('ENERGY_USER')
+    PASSWORD = os.getenv('ENERGY_PASS')
 
-login_page = requests.get("http://10.168.55.50:8088/searchWap/Login.aspx")
-cookies_login = login_page.cookies
-post_data = {
-    "webName": USERNAME,
-    "webPass": PASSWORD
-}
+from libxduauth import EnergySession
+ses = EnergySession(USERNAME, PASSWORD)
 
-HEADER = {
-    "AjaxPro-Method": "getLoginInput",
-    'Host': '10.168.55.50:8088',
-    'Connection': 'keep-alive',
-    'Origin': 'http://10.168.55.50:8088'
-}
-login_result = requests.post(
-    "http://10.168.55.50:8088/ajaxpro/SearchWap_Login,App_Web_fghipt60.ashx",
-    data=json.dumps(post_data), cookies=cookies_login, headers=HEADER
-)
-
-balance_page = requests.get(
-    'http://10.168.55.50:8088/searchWap/webFrm/met.aspx', cookies=cookies_login
-)
-
+balance_page = ses.get(
+    'http://10.168.55.50:8088/searchWap/webFrm/met.aspx'
+).text
 pattern_name = re.compile('表名称：(.*?)  ', re.S)
-name = re.findall(pattern_name, balance_page.text)
+name = re.findall(pattern_name, balance_page)
 pattern_balance = re.compile('剩余量：(.*?) </td>', re.S)
-balance = re.findall(pattern_balance, balance_page.text)
+balance = re.findall(pattern_balance, balance_page)
 print("电费账号：", USERNAME)
 for n, b in zip(name, balance):
     print(" 表名称：", n, "剩余量：", float(b))
