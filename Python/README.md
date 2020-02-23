@@ -9,9 +9,29 @@
 
 ## 开始使用
 
-1. 在此目录(xidian-scripts/Python/)下执行`python3 install.py`
-1. 根据`credentials.sample.py`创建并填写`credentials.py`
-1. 在任意目录都可执行`python3 <path-to-script>`
+1. 如果你之前填写过`credentials.py`，那么就可以直接运行相应的脚本了
+1. 否则，请在运行脚本前设置一些环境变量。Linux下可以写进`~/.*shrc`
+
+|环境变量|用到这个环境变量的脚本|补充说明|
+|:-:|:-:|:-:|
+|IDS_USER/IDS_PASS|export_timetable<br>get_grades.py<br>get_borrowed_books|对应西电统一认证服务的用户名密码|
+|WX_USER/WX_PASS|get_borrowed_books<br>get_card_balance<br>query_card_bill|由于此服务与统一认证密码保持一致，若脚本找不到这两个环境变量，则会使用IDS_USER/IDS_PASS|
+|PAY_USER/PAY_PASS|get_network_usage|对应zfw.xidian.edu.cn用户名密码，此脚本由于需要识别验证码，需要安装tesseract才能正常运行，且登陆速度可能较慢|
+|ENERGY_USER/ENERGY_PASS|get_electricity_balance|对应宿舍电费账户|
+
+
+## For Example
+
+在命令行直接运行：
+`IDS_USER=学号 IDS_PASS=密码 python3 get_grades.py`
+
+或者在`~/.bashrc`（假如你使用的是bash）中加入：
+```sh
+export IDS_USER=学号
+export IDS_PASS=密码
+```
+重启终端或执行`source ~/.bashrc`后执行：
+`python3 get_grades.py`
 
 ## Manifest file
 
@@ -27,10 +47,10 @@
 
 ## 备注
 
-1. 如果你安装了tesseract，脚本理论上能自动启用tesseract进行验证码识别
 1. 标*号的脚本只能在西电内网使用
+1. 设置好上面这些环境变量，就可以直接执行脚本了。你可以只保留或只下载自己所需要的脚本。
 
 ## 关于tesseract的使用
 
 1. tesseract可以用作简单的验证码识别，关于如何安装与使用它，请参考[tesseract](https://github.com/tesseract-ocr/tesseract/wiki)，当然你也可以选择不用它，仅仅安装pytesseract的python库而不安装其本体。(这样脚本才不会由于无法import pytesseract而报错)。
-1. @lllthhhh 自行标注了一些来自zfw.xidian.edu.cn的验证码进行了训练。其训练结果ar.traineddata将在执行`python3 install.py`时放置于`~/.xidian_scripts`
+1. @lllthhhh 自行标注了一些来自zfw.xidian.edu.cn的验证码进行了训练。zfw的登陆使用了此数据集。
