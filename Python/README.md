@@ -7,31 +7,51 @@
 
 西安电子科技大学校园生活的一些实用 Python 小脚本
 
+## 开始使用
+
+1. 如果你之前填写过`credentials.py`，那么就可以直接运行相应的脚本了
+1. 否则，请在运行脚本前设置一些环境变量。Linux下可以写进`~/.*shrc`
+
+|环境变量|用到这个环境变量的脚本|补充说明|
+|:-:|:-:|:-:|
+|IDS_USER/IDS_PASS|export_timetable<br>get_grades.py<br>get_borrowed_books|对应西电统一认证服务的用户名密码|
+|WX_USER/WX_PASS|get_borrowed_books<br>get_card_balance<br>query_card_bill|由于此服务与统一认证密码保持一致，若脚本找不到这两个环境变量，则会使用IDS_USER/IDS_PASS|
+|PAY_USER/PAY_PASS|get_network_usage|对应zfw.xidian.edu.cn用户名密码，此脚本由于需要识别验证码，需要安装tesseract才能正常运行，且登陆速度可能较慢|
+|ENERGY_USER/ENERGY_PASS|get_electricity_balance|对应宿舍电费账户|
+
+
+## For Example
+
+在命令行直接运行：
+`IDS_USER=学号 IDS_PASS=密码 python3 get_grades.py`
+
+或者在`~/.bashrc`（假如你使用的是bash）中加入：
+```sh
+export IDS_USER=学号
+export IDS_PASS=密码
+```
+重启终端或执行`source ~/.bashrc`后执行：
+`python3 get_grades.py`
+
 ## Manifest file
 
-* get_pay_info: 看看你的 10G 流量还有多少
-* get_unreturned_books: 看看你还有哪些书没还
-* get_xdoj_log: 把你在 `202.117.120.31/xdoj` 上交过的代码都扒拉下来
-* get_xdoj_outside: 把你在 `acm.xidian.edu.cn` 上交过的代码都扒拉下来
-* get_grades: 看看你考了多少分
-* export_timetable: 把当前学期课表保存为 iCalendar(.ics) 格式，这样就能导入到日历软件中。注意修改第二学期作息更换日期 END_MONTH 和 END_DAY。对于一站式服务大厅数据源，还需要设置学期开始日期 TERM_START_DAY
+* get_borrowed_books: 看看你借过哪些书
 * get_card_balance: 查询一卡通余额
+* get_electricity_balance*: 查询电量余额
+* get_grades: 看看你考了多少分
+* get_network_usage: 看看你的 10G 流量还有多少
+* get_xdoj_outside: 把你在 `acm.xidian.edu.cn` 上交过的代码都扒拉下来
+* export_timetable: 把当前学期课表保存为`.ics`格式，以便导入到日历软件中。
+* export_physics_experiment.py*: 将当前学期的物理实验保存为`.ics`格式，以便导入到日历软件中。
 * query_card_bill: 查询一卡通在指定时间段（30天内）的消费记录
 * export_physics_experiment.py: 将当前学期的物理实验保存为 iCalendar(.ics) 格式，这样就能导入到日历软件中。注意只能在校园网或翼讯环境下使用
 
-## 该怎么用？
-
-1. 请使用Python3(而不是Python2)
-1. 安装依赖：执行`pip3 install -r requirements.txt`  
-1. 重命名文件： 
-    - configurations.sample.py -> configurations.py
-    - credentials.sample.py -> credentials.py
-1. 根据自己需要更改配置文件： `configurations.py`, `credentials.py`
-1. 跑起来：python3 [文件名]
-
 ## 备注
 
-1. 为正常使用脚本，请务必按照credentials.sample.py与configurations.sample.py仔细填写credentials.py与configurations.py。
+1. 标*号的脚本只能在西电内网使用
+1. 设置好上面这些环境变量，就可以直接执行脚本了。你可以只保留或只下载自己所需要的脚本。
+
+## 关于tesseract的使用
+
 1. tesseract可以用作简单的验证码识别，关于如何安装与使用它，请参考[tesseract](https://github.com/tesseract-ocr/tesseract/wiki)，当然你也可以选择不用它，仅仅安装pytesseract的python库而不安装其本体。(这样脚本才不会由于无法import pytesseract而报错)。
-1. 使用Python2有可能能正常使用大部分的功能，然而在编码的过程中不会考虑能否在Python2上正常运行。再者，python2在2020年1月1日起不再维护，pip也会停止对py2的支持。如果你还在用Python2的话赶紧换到py3吧。
-1. get_xdoj_log仅能获取开放的题目的你自己的提交记录。但是如果你对代码进行一点小小的魔改的话，你不仅能获取到自己的所有提交记录，还能把所有人交过的所有代码都爬下来。
+1. @lllthhhh 自行标注了一些来自zfw.xidian.edu.cn的验证码进行了训练。zfw的登陆使用了此数据集。

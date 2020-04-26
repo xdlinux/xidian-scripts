@@ -15,7 +15,20 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
-import time
+from libxduauth import WXSession
+try:
+    import credentials
+    USERNAME, PASSWORD = credentials.WX_USERNAME, credentials.WX_PASSWORD
+except ImportError:
+    import os
+    USERNAME = os.getenv('WX_USER') or os.getenv('IDS_USER') or os.getenv('STUDENT_ID')
+    PASSWORD = os.getenv('WX_PASS') or os.getenv('IDS_PASS')
 
-def timestamp():
-    return int(time.time() * 1000)
+x = WXSession(USERNAME, PASSWORD)
+
+print('借过的书:')
+for i in x.post(
+    'http://202.117.121.7:8080/oaCampus/library/getReturn.do',
+    param={"offset": 1}
+).json()['list']:
+    print('《'+i['title']+'》 '+'应还日期:'+i['returnDate'])

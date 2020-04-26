@@ -15,18 +15,24 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
-import auth.wx
-import credentials
+from libxduauth import WXSession
+try:
+    import credentials
+    USERNAME, PASSWORD = credentials.WX_USERNAME, credentials.WX_PASSWORD
+except ImportError:
+    import os
+    USERNAME = os.getenv('WX_USER') or os.getenv('IDS_USER') or os.getenv('STUDENT_ID')
+    PASSWORD = os.getenv('WX_PASS') or os.getenv('IDS_PASS')
+
 from datetime import datetime
 
 
 if __name__ == '__main__':
-    ses = auth.wx.get_login_session(
-        credentials.WX_USERNAME, credentials.WX_PASSWORD)
+    ses = WXSession(USERNAME, PASSWORD)
     result = ses.post(
-        auth.wx.BASE + 'infoCampus/playCampus/getAllPurposeCard.do',
+        ses.BASE + 'infoCampus/playCampus/getAllPurposeCard.do',
         param={}
     ).json()
-    print("一卡通余额: " + str(int(result["allPurposeCardVO"]
-                              ["cardGeneralInfo"][0]["value"]) / 100) + " 元")
-    
+    print("一卡通余额: " + str(int(
+        result["allPurposeCardVO"]["cardGeneralInfo"][0]["value"]
+    ) / 100) + " 元")

@@ -16,29 +16,27 @@
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
 import requests
+import json
 import re
 
-from auth.GLOBAL import *
+try:
+    import credentials
+    USERNAME, PASSWORD = credentials.ELECTRICITY_USERNAME, credentials.ELECTRICITY_PASSWORD
+except ImportError:
+    import os
+    USERNAME = os.getenv('ENERGY_USER')
+    PASSWORD = os.getenv('ENERGY_PASS')
 
-REGEX_HIDDEN_TAG = '<input type="hidden" name="(.*)" value="(.*)"'
-REGEX_HTML_COMMENT = r'<!--\s*([\s\S]*?)\s*-->'
+from libxduauth import EnergySession
+ses = EnergySession(USERNAME, PASSWORD)
 
-def get_login_session(target, username, password):
-    ses = requests.session()
-    ses.headers = HEADER
-    page = ses.get(
-        'http://ids.xidian.edu.cn/authserver/login',
-        params={'service': target}
-    ).text
-    page = re.sub(REGEX_HTML_COMMENT,'',page)
-    params = {i[0]: i[1] for i in re.findall(REGEX_HIDDEN_TAG, page)}
-    ses.post(
-        'http://ids.xidian.edu.cn/authserver/login',
-        params={'service': target},
-        data=dict(params,**{
-            'username': username,
-            'password': password
-        })
-    )
-    return ses
-
+balance_page = ses.get(
+    'http://10.168.55.50:8088/searchWap/webFrm/met.aspx'
+).text
+pattern_name = re.compile('表名称：(.*?)  ', re.S)
+name = re.findall(pattern_name, balance_page)
+pattern_balance = re.compile('剩余量：(.*?) </td>', re.S)
+balance = re.findall(pattern_balance, balance_page)
+print("电费账号：", USERNAME)
+for n, b in zip(name, balance):
+    print(" 表名称：", n, "剩余量：", float(b))

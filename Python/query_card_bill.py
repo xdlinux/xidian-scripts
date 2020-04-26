@@ -15,17 +15,22 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
-import auth.wx
-import credentials
+try:
+    import credentials
+    USERNAME, PASSWORD = credentials.WX_USERNAME, credentials.WX_PASSWORD
+except ImportError:
+    import os
+    USERNAME = os.getenv('WX_USER') or os.getenv(
+        'IDS_USER') or os.getenv('STUDENT_ID')
+    PASSWORD = os.getenv('WX_PASS') or os.getenv('IDS_PASS')
+from libxduauth import WXSession
 from datetime import datetime
 
 if __name__ == '__main__':
-    ses = auth.wx.get_login_session(
-        credentials.WX_USERNAME, credentials.WX_PASSWORD)
+    ses = WXSession(USERNAME, PASSWORD)
     result = ses.post(
-        auth.wx.BASE + 'infoCampus/playCampus/getAllPurposeCard.do',
-        param={}
-    ).json()
+        ses.BASE + 'infoCampus/playCampus/getAllPurposeCard.do'
+    )
 
     print("查询时间跨度不能超过 30 天。")
     while True:
@@ -39,7 +44,7 @@ if __name__ == '__main__':
             param = param.format(datetime.strptime(start_date, "%Y-%m-%d").strftime(
                 "%Y-%m-%d"), datetime.strptime(end_date, "%Y-%m-%d").strftime("%Y-%m-%d"))
             result = ses.post(
-                auth.wx.BASE + 'infoCampus/playCampus/getExpenseRecords.do', param=param).json()
+                ses.BASE + 'infoCampus/playCampus/getExpenseRecords.do', param=param).json()
             if len(result["expenseList"]) == 0:
                 print("指定的时间段内没有消费记录。")
                 print()
