@@ -86,6 +86,7 @@ if __name__ == '__main__':
         if first_hr_new == first_hr:
             continue
         else:
+            first_hr_new = first_hr
             push(info_all)
         # sleep 2h
         time.sleep(2 * 60 * 60)
