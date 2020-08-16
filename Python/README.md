@@ -14,11 +14,12 @@
 
 |环境变量|用到这个环境变量的脚本|补充说明|
 |:-:|:-:|:-:|
-|IDS_USER/IDS_PASS|export_timetable<br>get_grades.py<br>get_borrowed_books|对应西电统一认证服务的用户名密码|
+|IDS_USER/IDS_PASS|export_timetable<br>get_grades.py<br>get_borrowed_books<br>check_in|对应西电统一认证服务的用户名密码|
 |WX_USER/WX_PASS|get_borrowed_books<br>get_card_balance<br>query_card_bill|由于此服务与统一认证密码保持一致，若脚本找不到这两个环境变量，则会使用IDS_USER/IDS_PASS|
 |PAY_USER/PAY_PASS|get_network_usage|对应zfw.xidian.edu.cn用户名密码，此脚本由于需要识别验证码，需要安装tesseract才能正常运行，且登陆速度可能较慢|
 |ENERGY_USER/ENERGY_PASS|get_electricity_balance|对应宿舍电费账户|
 |RS_USER/RS_PASS|get_rs_campus_recruitment|睿思校外站|
+|DISABLE_STATS|check_in|禁止开发者收集使用日志|
 
 
 ## For Example
@@ -45,7 +46,8 @@ export IDS_PASS=密码
 * export_timetable: 把当前学期课表保存为`.ics`格式，以便导入到日历软件中。
 * export_physics_experiment.py*: 将当前学期的物理实验保存为`.ics`格式，以便导入到日历软件中。
 * query_card_bill: 查询一卡通在指定时间段（30天内）的消费记录
-* get_rs_campus_recruitment: 获取睿思论坛伤的校园招聘信息
+* get_rs_campus_recruitment: 获取睿思论坛上的校园招聘信息
+* check_in: 2020 晨午晚检
 
 ## 备注
 
