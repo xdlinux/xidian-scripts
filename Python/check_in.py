@@ -1,15 +1,14 @@
-import requests
-import json
 import time
+import os
 import pytz
 import datetime
+import requests
 
 try:
     import credentials
     USERNAME = credentials.IDS_USERNAME
     PASSWORD = credentials.IDS_PASSWORD
 except ImportError:
-    import os
     USERNAME, PASSWORD = [os.getenv(i) for i in ('IDS_USER', 'IDS_PASS')]
 
 
