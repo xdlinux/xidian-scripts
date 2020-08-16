@@ -45,7 +45,7 @@ export IDS_PASS=密码
 * export_timetable: 把当前学期课表保存为`.ics`格式，以便导入到日历软件中。
 * export_physics_experiment.py*: 将当前学期的物理实验保存为`.ics`格式，以便导入到日历软件中。
 * query_card_bill: 查询一卡通在指定时间段（30天内）的消费记录
-* get_rs_campus_recruitment: 获取睿思论坛伤的校园招聘信息
+* get_rs_campus_recruitment: 获取睿思论坛上的校园招聘信息
 
 ## 备注
 
