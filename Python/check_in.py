@@ -61,7 +61,7 @@ def main_handler(event, context):
     message = get_hour_message() + '检-' + message
 
     if not os.getenv('DISABLE_STATS'):
-        send_log(USERNAME, message)  # 可选,上传日志,帮助开发者优化程序:D
+        send_log(USERNAME[:9], message)  # 可选,上传日志,帮助开发者优化程序:D
 
 
 if __name__ == "__main__":
