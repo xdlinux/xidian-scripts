@@ -25,44 +25,52 @@ except ImportError:
     import os
     USERNAME, PASSWORD = [os.getenv(i) for i in ('IDS_USER', 'IDS_PASS')]
 
-ses = EhallSession(
-    credentials.IDS_USERNAME, credentials.IDS_PASSWORD
-)
-ses.use_app(4768574631264620)
+# Some golbal variables
+sess = EhallSession(USERNAME, PASSWORD)
+SERVICE_URL = 'http://ehall.xidian.edu.cn/jwapp/sys/cjcx/modules/cjcx/xscjcx.do'
+querySetting = [{
+        "name": "SFYX",
+        "caption": "是否有效",
+        "linkOpt": "AND",
+        "builderList": "cbl_m_List",
+        "builder": "m_value_equal",
+        "value": "1",
+        "value_display": "是"
+    },
+    {
+        "name": "SHOWMAXCJ",
+        "caption": "显示最高成绩",
+        "linkOpt": "AND",
+        "builderList": "cbl_String",
+        "builder": "equal",
+        "value": 0,
+        "value_display": "否"
+    }],
 
-querySetting = [
-    {  # 学期
-        'name': 'XNXQDM',
-        'value': '2017-2018-2,2018-2019-1',
-        'linkOpt': 'and',
-        'builder': 'm_value_equal'
-    }, {  # 是否有效
-        'name': 'SFYX',
-        'value': '1',
-        'linkOpt': 'and',
-        'builder': 'm_value_equal'
-    }
-]
-courses = {}
 
-for i in ses.post(
-        'http://ehall.xidian.edu.cn/jwapp/sys/cjcx/modules/cjcx/xscjcx.do',
+def main():
+    resp = sess.post(SERVICE_URL,
         data={
-            'querySetting=': json.dumps(querySetting),
-            '*order': 'KCH,KXH',  # 按课程名，课程号排序
-            'pageSize': 1000,  # 有多少整多少.jpg
+            'querySetting': querySetting,
+            '*order': '-XNXQDM, +KCXZDM, -XF, -KCH, -KXH', # 按照 学期、课程类型、学分、课程编号、班级编号 排序， -为降序、+为升序
+            'pageSize': 1000,
             'pageNumber': 1
-        }
-).json()['datas']['xscjcx']['rows']:
-    if i['XNXQDM_DISPLAY'] not in courses.keys():
-        courses[i['XNXQDM_DISPLAY']] = []
-    courses[i['XNXQDM_DISPLAY']].append(
-        (i['XSKCM'].strip(), str(i['ZCJ']), str(i['XFJD'])))
+    })
 
-for i in courses.keys():
-    print(i + ':')
-    for j in courses[i]:
-        if j[2] == 'None':
-            print('\t' + j[0] + ': ' + j[1])
-        else:
-            print('\t' + j[0] + ': ' + j[1] + ' (' + j[2] + ')')
+    pretty(json.loads(resp.text))
+
+
+def pretty(data):
+    from prettytable import PrettyTable
+    table = PrettyTable(['Course', 'Score', 'Comment', 'Credit', 'Type', 'Term'])
+    courses = data['datas']['xscjcx']['rows']
+
+    for course in courses:
+        table.add_row([course['KCM'], course['ZCJ'] or '', course['QMCJ_DISPLAY'] or course['SJCJ_DISPLAY'] or '', course['XF'], course['KCXZDM_DISPLAY'], course['XNXQDM_DISPLAY']])
+
+    table.sort_key('Type')
+    print(table)
+
+
+if __name__ == "__main__":
+    main()
