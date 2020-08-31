@@ -26,16 +26,9 @@ except ImportError:
     import os
     USERNAME, PASSWORD = [os.getenv(i) for i in ('IDS_USER', 'IDS_PASS')]
 
-MORNING_TIME = [
+TIME_SCHED = [
     ("8:30", "10:05"),
-    ("10:25", "12:00")
-]
-SUMMER_TIME = MORNING_TIME + [
-    ("14:30", "16:05"),
-    ("16:25", "18:00"),
-    ("19:30", "21:05")
-]
-WINTER_TIME = MORNING_TIME + [
+    ("10:25", "12:00"),
     ("14:00", "15:35"),
     ("15:55", "17:30"),
     ("19:00", "20:35")
@@ -104,10 +97,7 @@ for week_cnt in range(len(courseList)):
 
             date = termStartDay + \
                 timedelta(days=week_cnt * 7 + day_cnt)  # 从第一 周的第一天起
-            (beginTime, endTime) = \
-                SUMMER_TIME[int(course['sectionSpan'][1] / 2 - 1)] if \
-                date.month >= 5 and date.month < 10 else \
-                WINTER_TIME[int(course['sectionSpan'][1] / 2 - 1)]
+            (beginTime, endTime) = TIME_SCHED[int(course['sectionSpan'][1] / 2 - 1)]
             (beginTime, endTime) = (beginTime.split(':'), endTime.split(':'))
 
             e.add(
