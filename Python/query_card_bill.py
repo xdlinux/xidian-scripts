@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by the XiDian Open Source Community.
+# Copyright (C) 2021 by the XiDian Open Source Community.
 #
 # This file is part of xidian-scripts.
 #

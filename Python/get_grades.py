@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by the XiDian Open Source Community.
+# Copyright (C) 2021 by the XiDian Open Source Community.
 #
 # This file is part of xidian-scripts.
 #
@@ -33,7 +33,7 @@ ses.use_app(4768574631264620)
 querySetting = [
     {  # 学期
         'name': 'XNXQDM',
-        'value': '2017-2018-2,2018-2019-1',
+        'value': '2017-2018-2,2018-2021-1',
         'linkOpt': 'and',
         'builder': 'm_value_equal'
     }, {  # 是否有效
