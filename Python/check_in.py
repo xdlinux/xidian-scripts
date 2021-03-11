@@ -31,16 +31,6 @@ def commit_data(username, password):
     ).json()['m']
 
 
-def send_log(student_id, message):
-    if requests.post(
-        'http://XduCheckInLog.117503445.top:8013/api/log', json={
-            "student_id": str(student_id),
-            "message": message
-        }
-    ).text != 'success':
-        print('日志收集异常，请联系github.com/117503445')
-
-
 def get_hour_message():
     h = datetime.datetime.fromtimestamp(
         int(time.time()), pytz.timezone('Asia/Shanghai')).hour
@@ -56,12 +46,8 @@ def get_hour_message():
 
 def main_handler(event, context):
     message = commit_data(USERNAME, PASSWORD)
-    print(message)
+    print(f'[{datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")}] {message}')
     message = get_hour_message() + '检-' + message
-
-    if not os.getenv('DISABLE_STATS'):
-        send_log(USERNAME[:9], message)  # 可选,上传日志,帮助开发者优化程序:D
-
 
 if __name__ == "__main__":
     main_handler(None, None)
