@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by the XiDian Open Source Community.
+# Copyright (C) 2021 by the XiDian Open Source Community.
 #
 # This file is part of xidian-scripts.
 #
@@ -57,11 +57,8 @@ def get_info(ses):
 
 
 if __name__ == '__main__':
-    try:
-        ses = ZFWSession(USERNAME, PASSWORD)
-        ip_list, used, rest, charged = get_info(ses)
-        for ip_info in ip_list:
-            print(ip_info)
-        print("此月已使用流量 %s , 剩余 %s , 充值剩余 %s" % (used, rest, charged))
-    except:
-        ses.close()
+    ses = ZFWSession(USERNAME, PASSWORD)
+    ip_list, used, rest, charged = get_info(ses)
+    for ip_info in ip_list:
+        print(ip_info)
+    print("此月已使用流量 %s , 剩余 %s , 充值剩余 %s" % (used, rest, charged))
