@@ -20,6 +20,7 @@
 |ENERGY_USER/ENERGY_PASS|get_electricity_balance|对应宿舍电费账户|
 |RS_USER/RS_PASS|get_rs_campus_recruitment|睿思校外站|
 |DISABLE_STATS|check_in|禁止开发者收集使用日志|
+|SPORTS_USERNAME/SPORTS_PASSWORD|get_sports_punch_records|对应体适能用户名和密码|
 
 
 ## For Example
@@ -48,6 +49,7 @@ export IDS_PASS=密码
 * query_card_bill: 查询一卡通在指定时间段（30天内）的消费记录
 * get_rs_campus_recruitment: 获取睿思论坛上的校园招聘信息
 * check_in: 2020 晨午晚检
+* sports_punch: 查询体育打卡次数
 
 ## 备注
 

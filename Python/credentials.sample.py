@@ -54,3 +54,9 @@ ELECTRICITY_USERNAME = ''
 
 ELECTRICITY_PASSWORD = '123456'
 # Password for electricty system. Default value is 123456
+
+SPORTS_USERNAME = IDS_USERNAME
+# Username for sports system. Normally it is your student id.
+
+SPORTS_PASSWORD = ''
+# Password for sports system.
