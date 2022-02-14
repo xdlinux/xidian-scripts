@@ -49,7 +49,7 @@ export IDS_PASS=密码
 * query_card_bill: 查询一卡通在指定时间段（30天内）的消费记录
 * get_rs_campus_recruitment: 获取睿思论坛上的校园招聘信息
 * check_in: 2020 晨午晚检
-* sports_punch: 查询体育打卡次数
+* get_sports_punch_records: 查询体育打卡次数
 
 ## 备注
 
