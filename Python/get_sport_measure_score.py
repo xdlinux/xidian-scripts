@@ -30,12 +30,12 @@ except ImportError:
         'SPORTS_USERNAME', 'SPORTS_PASSWORD')]
 
 
-def get_sport_measure_detail(session, meaScoreId):
+def get_sport_measure_detail(session, measure_score_id):
     form = PrettyTable()
     form.field_names = ["项目", "结果", "单位", "分数"]
     response = session.post(session.BASE_URL + 'measure/getStuScoreDetail',
                             data={
-                                "meaScoreId": meaScoreId
+                                "meaScoreId": measure_score_id
                             }).json()
     for each in response['data']:
         if 'actualScore' in each:
@@ -43,6 +43,7 @@ def get_sport_measure_detail(session, meaScoreId):
                          each["examunit"], each["score"]])
         else:
             form.add_row([each["examName"], "未录入", each["examunit"], "未录入"])
+    form.align = "l"
     print(form)
 
 
