@@ -12,3 +12,4 @@ requests
 six
 urllib3
 libxduauth
+prettytable
