@@ -34,14 +34,7 @@ def commit_data(username, password):
 def get_hour_message():
     h = datetime.datetime.fromtimestamp(
         int(time.time()), pytz.timezone('Asia/Shanghai')).hour
-    if 6 <= h <= 11:
-        return '晨'
-    elif 12 <= h <= 17:
-        return '午'
-    elif 18 <= h <= 24:
-        return '晚'
-    else:
-        return '凌晨'
+    return "睡晨午晚"[h // 6]
 
 
 def main_handler(event, context):
