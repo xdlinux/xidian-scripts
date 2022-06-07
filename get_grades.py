@@ -46,38 +46,31 @@ querySetting = [
         'builder': 'm_value_equal'
     }
 ]
-if '--current-term' in sys.argv[1:]:
+if '--all-terms' not in sys.argv[1:]:
     res = ses.post(
-        # 查询当前学年学期hsyg学年学期
+        # 查询当前学年学期和上一个学年学期
         'http://ehall.xidian.edu.cn/jwapp/sys/cjcx/modules/cjcx/cxdqxnxqhsygxnxq.do',
     ).json()['datas']['cxdqxnxqhsygxnxq']['rows']
     querySetting.append({  # 学期
         'name': 'XNXQDM',
-        'value': res[0]['XNXQDM'],
+        'value': res[-1]['XNXQDM'],
         'linkOpt': 'and',
         'builder': 'equal'
     })
-# 请参考 https://github.com/xdlinux/xidian-scripts/wiki/EMAP#高级查询的格式
-courses = {}
 
 for i in ses.post(
     'http://ehall.xidian.edu.cn/jwapp/sys/cjcx/modules/cjcx/xscjcx.do',
     data={
         'querySetting': json.dumps(querySetting),
-        '*order': 'KCH,KXH',  # 按课程名，课程号排序
-        'pageSize': 1000,  # 有多少整多少.jpg
+        '*order': '+XNXQDM,KCH,KXH',
+        # 请参考 https://github.com/xdlinux/xidian-scripts/wiki/EMAP#高级查询的格式
+        'pageSize': 1000,
         'pageNumber': 1
     }
 ).json()['datas']['xscjcx']['rows']:
-    if i['XNXQDM_DISPLAY'] not in courses.keys():
-        courses[i['XNXQDM_DISPLAY']] = []
-    courses[i['XNXQDM_DISPLAY']].append(
-        (i['XSKCM'].strip(), str(i['ZCJ']), str(i['XFJD'])))
-
-for i in courses.keys():
-    print(i + ':')
-    for j in courses[i]:
-        if j[2] == 'None':
-            print('\t' + j[0] + ': ' + j[1])
-        else:
-            print('\t' + j[0] + ': ' + j[1] + ' (' + j[2] + ')')
+    print(
+        f'{i["XNXQDM"]} [{i["KCH"]}]{i["XSKCM"]} '
+        f'{i["KCXZDM_DISPLAY"]} '
+        f'{i["ZCJ"] if i["ZCJ"] else "还没出成绩"} '
+        f'{i["XFJD"] if i["XFJD"] else ""}'
+    )
