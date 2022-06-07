@@ -16,19 +16,29 @@
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
 # contributed by speroxu
+import pkg_resources
+import subprocess
+import sys
+import os
+try:
+    pkg_resources.require(('requests', 'Pillow'))
+except (pkg_resources.DistributionNotFound, pkg_resources.VersionConflict):
+    subprocess.check_call([
+        sys.executable, '-m', 'pip', 'install', 'requests', 'Pillow'
+    ])
+
+USERNAME, PASSWORD = [os.getenv(i) for i in ('XDOJ_USER', 'XDOJ_PASS')]
+if not USERNAME or not PASSWORD:
+    print('请设置环境变量 XDOJ_USER 和 XDOJ_PASS')
+    exit(1)
 
 import re
-import os
-import lib.config as config
-import lib.utils as utils
 import requests
-import credentials
 from PIL import Image
 from io import BytesIO
-import pytesseract
 
 base = 'http://acm.xidian.edu.cn/'
-dir_name = credentials.XDOJ_USERNAME + '_xdacm'
+dir_name = USERNAME + '_xdacm'
 os.makedirs(dir_name, exist_ok=True)
 
 
@@ -38,15 +48,13 @@ def login(sess):
         sess.get(login_url)
         vcode_resp = sess.get(base + 'vcode.php')
         img = Image.open(BytesIO(vcode_resp.content))
-        if config.USE_TESSERACT:
-            res, vcode = utils.try_get_vcode(img)
-        else:
-            vcode = utils.prompt_vcode(img)
+        img.show()
+        vcode = input('验证码:')
         if vcode == '':
             raise PermissionError
         if 'Verify Code Wrong!' in sess.post(base + 'login.php', data={
-            'user_id': credentials.XDOJ_USERNAME,
-            'password': credentials.XDOJ_PASSWORD,
+            'user_id': USERNAME,
+            'password': PASSWORD,
             'vcode': vcode,
             'submit': 'Submit'
         }).text:
@@ -57,7 +65,7 @@ def login(sess):
 
 
 def get_status(sess, top=''):
-    url = base + 'status.php?user_id=' + credentials.XDOJ_USERNAME + top
+    url = base + 'status.php?user_id=' + USERNAME + top
     page = sess.get(url).text
 
     status_reg = r"<span class='btn.*?'>(.*?)<\/span>.*?submitpage.php\?id=([0-9]+)&sid=([0-9]+)"

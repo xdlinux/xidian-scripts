@@ -15,18 +15,25 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
+import pkg_resources
+import subprocess
+import sys
+import os
+try:
+    pkg_resources.require(('libxduauth', 'BeautifulSoup4'))
+except (pkg_resources.DistributionNotFound, pkg_resources.VersionConflict):
+    subprocess.check_call([
+        sys.executable, '-m', 'pip', 'install', 'libxduauth', 'BeautifulSoup4'
+    ])
+USERNAME, PASSWORD = [os.getenv(i) for i in ('PAY_USER', 'PAY_PASS')]
+
+if not USERNAME or not PASSWORD:
+    print('请设置环境变量 PAY_USER 和 PAY_PASS')
+    exit(1)
+
 import re
-import credentials
 from libxduauth import ZFWSession
 import bs4
-
-try:
-    import credentials
-    USERNAME = credentials.PAY_USERNAME
-    PASSWORD = credentials.PAY_PASSWORD
-except:
-    import os
-    USERNAME, PASSWORD = [os.getenv(i) for i in ('PAY_USER', 'PAY_PASS')]
 
 
 def get_info(ses):

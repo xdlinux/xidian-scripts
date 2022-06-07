@@ -15,19 +15,26 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
-import requests
-import json
-import re
-
+import pkg_resources
+import subprocess
+import sys
+import os
 try:
-    import credentials
-    USERNAME, PASSWORD = credentials.ELECTRICITY_USERNAME, credentials.ELECTRICITY_PASSWORD
-except ImportError:
-    import os
-    USERNAME = os.getenv('ENERGY_USER')
-    PASSWORD = os.getenv('ENERGY_PASS')
+    pkg_resources.require(('libxduauth'))
+except (pkg_resources.DistributionNotFound, pkg_resources.VersionConflict):
+    subprocess.check_call([
+        sys.executable, '-m', 'pip', 'install', 'libxduauth'
+    ])
 
+USERNAME, PASSWORD = [os.getenv(i) for i in ('ENERGY_USER', 'ENERGY_PASS')]
+if not USERNAME or not PASSWORD:
+    print('请设置环境变量 ENERGY_USER 和 ENERGY_PASS')
+    exit(1)
+
+
+import re
 from libxduauth import EnergySession
+
 ses = EnergySession(USERNAME, PASSWORD)
 
 balance_page = ses.get(

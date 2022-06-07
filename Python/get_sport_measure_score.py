@@ -16,18 +16,25 @@
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import pkg_resources
+import subprocess
+import sys
+import os
+try:
+    pkg_resources.require(('libxduauth'))
+except (pkg_resources.DistributionNotFound, pkg_resources.VersionConflict):
+    subprocess.check_call([
+        sys.executable, '-m', 'pip', 'install', 'libxduauth'
+    ])
+
+USERNAME, PASSWORD = [os.getenv(i) for i in ('SPORTS_USER', 'SPORTS_PASS')]
+if not USERNAME or not PASSWORD:
+    print('请设置环境变量 SPORTS_USER 和 SPORTS_PASS')
+    exit(1)
+
 from libxduauth import SportsSession
 # For a nice output.
 from prettytable import PrettyTable
-
-try:
-    import credentials
-    USERNAME = credentials.SPORTS_USERNAME
-    PASSWORD = credentials.SPORTS_PASSWORD
-except ImportError:
-    import os
-    USERNAME, PASSWORD = [os.getenv(i) for i in (
-        'SPORTS_USERNAME', 'SPORTS_PASSWORD')]
 
 
 def get_sport_measure_detail(session, measure_score_id):

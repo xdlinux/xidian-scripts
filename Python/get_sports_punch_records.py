@@ -15,17 +15,24 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with xidian-scripts.  If not, see <http://www.gnu.org/licenses/>.
 
-from libxduauth import SportsSession
-
+import pkg_resources
+import subprocess
+import sys
+import os
 try:
-    import credentials
-    USERNAME = credentials.SPORTS_USERNAME
-    PASSWORD = credentials.SPORTS_PASSWORD
-except ImportError:
-    import os
-    USERNAME, PASSWORD = [os.getenv(i) for i in (
-        'SPORTS_USERNAME', 'SPORTS_PASSWORD')]
+    pkg_resources.require(('libxduauth'))
+except (pkg_resources.DistributionNotFound, pkg_resources.VersionConflict):
+    subprocess.check_call([
+        sys.executable, '-m', 'pip', 'install', 'libxduauth'
+    ])
 
+USERNAME, PASSWORD = [os.getenv(i) for i in ('SPORTS_USER', 'SPORTS_PASS')]
+if not USERNAME or not PASSWORD:
+    print('请设置环境变量 SPORTS_USER 和 SPORTS_PASS')
+    exit(1)
+
+
+from libxduauth import SportsSession
 
 def get_current_term(session):
     response = session.post(session.BASE_URL + 'stuTermPunchRecord/findList',
