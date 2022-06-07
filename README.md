@@ -64,6 +64,8 @@ echo "text=HR_news&desp=`python3 get_rs_campus_recruitment.py --markdown --urlen
 ### As a programmer
 
 直接 PR 即可，同时我们欢迎其他自由的语言实现。  
+本仓库的目的更多是鼓励大家尝试在 GitHub 上参与程序的编写，请大胆提 Pull Request，不必担心。
+仓库的维护者会尽最大可能帮助你熟悉 git workflow。
 
 ### As a reviewer
 
