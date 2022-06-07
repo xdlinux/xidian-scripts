@@ -19,8 +19,7 @@
 |PAY_USER/PAY_PASS|get_network_usage|对应zfw.xidian.edu.cn用户名密码，此脚本由于需要识别验证码，需要安装tesseract才能正常运行，且登陆速度可能较慢|
 |ENERGY_USER/ENERGY_PASS|get_electricity_balance|对应宿舍电费账户|
 |RS_USER/RS_PASS|get_rs_campus_recruitment|睿思校外站|
-|DISABLE_STATS|check_in|禁止开发者收集使用日志|
-|SPORTS_USERNAME/SPORTS_PASSWORD|get_sports_punch_records|对应体适能用户名和密码|
+|SPORTS_USER/SPORTS_PASS|get_sports_punch_records|对应体适能用户名和密码|
 
 
 ## For Example
