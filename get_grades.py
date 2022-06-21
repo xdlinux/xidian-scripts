@@ -58,6 +58,9 @@ if '--all-terms' not in sys.argv[1:]:
         'builder': 'equal'
     })
 
+total = [0, 0]
+course_ignore = ['形势与政策', '创业基础', '新生', '写作与沟通', '学科导论', '心理']
+
 for i in ses.post(
     'http://ehall.xidian.edu.cn/jwapp/sys/cjcx/modules/cjcx/xscjcx.do',
     data={
@@ -68,9 +71,25 @@ for i in ses.post(
         'pageNumber': 1
     }
 ).json()['datas']['xscjcx']['rows']:
+    if all((kw not in i["XSKCM"] for kw in course_ignore)):  # 不计入均分
+        i["XSKCM"] = '*' + i["XSKCM"]
+    elif i["SFJG"] == '1':  # 及格
+        if i["CXCKDM"] == '01':  # 初修
+            total[0] += i["XF"] * i["ZCJ"]
+            total[1] += i["XF"]
+        else:
+            total[0] += i["XF"] * 60.0
+            total[1] += i["XF"]
+    roman_nums = str.maketrans({
+        'Ⅰ': 'I', 'Ⅱ': 'II', 'Ⅲ': 'III', 'Ⅳ': 'IV', 'Ⅴ': 'V', 'Ⅵ': 'VI', 'Ⅶ': 'VII', 'Ⅷ': 'VIII',
+    }) # 一些终端无法正确打印罗马数字
+    i["XSKCM"] = i["XSKCM"].translate(roman_nums)
     print(
         f'{i["XNXQDM"]} [{i["KCH"]}]{i["XSKCM"]} '
         f'{i["KCXZDM_DISPLAY"]} '
         f'{i["ZCJ"] if i["ZCJ"] else "还没出成绩"} '
         f'{i["XFJD"] if i["XFJD"] else ""}'
     )
+
+print(f'加权平均成绩：{total[0] / total[1]:.2f}')
+print('注：标记有*的课程不计入均分')
