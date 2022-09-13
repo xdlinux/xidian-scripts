@@ -60,3 +60,9 @@ SPORTS_USERNAME = IDS_USERNAME
 
 SPORTS_PASSWORD = ''
 # Password for sports system.
+
+RS_USERNAME = ''
+# Username for rs
+
+RS_PASSWORD = ''
+# Password for rs

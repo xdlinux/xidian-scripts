@@ -27,7 +27,12 @@ except (pkg_resources.DistributionNotFound, pkg_resources.VersionConflict):
         sys.executable, '-m', 'pip', 'install', 'requests', 'Pillow'
     ])
 
-USERNAME, PASSWORD = [os.getenv(i) for i in ('XDOJ_USER', 'XDOJ_PASS')]
+try:
+    import credentials
+    USERNAME = credentials.XDOJ_USERNAME
+    PASSWORD = credentials.XDOJ_PASSWORD
+except ImportError:
+    USERNAME, PASSWORD = [os.getenv(i) for i in ('XDOJ_USER', 'XDOJ_PASS')]
 if not USERNAME or not PASSWORD:
     print('请设置环境变量 XDOJ_USER 和 XDOJ_PASS')
     exit(1)

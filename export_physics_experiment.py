@@ -26,7 +26,12 @@ except (pkg_resources.DistributionNotFound, pkg_resources.VersionConflict):
         sys.executable, '-m', 'pip', 'install', 'libxduauth', 'icalendar'
     ])
 
-USERNAME, PASSWORD = [os.getenv(i) for i in ('PHYSICS_USER', 'PHYSICS_PASS')]
+try:
+    import credentials
+    USERNAME = credentials.PHYSICS_USERNAME
+    PASSWORD = credentials.PHYSICS_PASSWORD
+except ImportError:
+    USERNAME, PASSWORD = [os.getenv(i) for i in ('PHYSICS_USER', 'PHYSICS_PASS')]
 if not USERNAME or not PASSWORD:
     print('请设置环境变量 PHYSICS_USER 和 PHYSICS_PASS')
     exit(1)
