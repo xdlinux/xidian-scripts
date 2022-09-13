@@ -27,7 +27,12 @@ except (pkg_resources.DistributionNotFound, pkg_resources.VersionConflict):
         sys.executable, '-m', 'pip', 'install', 'libxduauth'
     ])
 
-USERNAME, PASSWORD = [os.getenv(i) for i in ('SPORTS_USER', 'SPORTS_PASS')]
+try:
+    import credentials
+    USERNAME = credentials.SPORTS_USERNAME
+    PASSWORD = credentials.SPORTS_PASSWORD
+except ImportError:
+    USERNAME, PASSWORD = [os.getenv(i) for i in ('SPORTS_USER', 'SPORTS_PASS')]
 if not USERNAME or not PASSWORD:
     print('请设置环境变量 SPORTS_USER 和 SPORTS_PASS')
     exit(1)

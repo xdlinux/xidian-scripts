@@ -26,7 +26,12 @@ except (pkg_resources.DistributionNotFound, pkg_resources.VersionConflict):
         sys.executable, '-m', 'pip', 'install', 'libxduauth'
     ])
 
-USERNAME, PASSWORD = [os.getenv(i) for i in ('ENERGY_USER', 'ENERGY_PASS')]
+try:
+    import credentials
+    USERNAME = credentials.ELECTRICITY_USERNAME
+    PASSWORD = credentials.ELECTRICITY_PASSWORD
+except ImportError:
+    USERNAME, PASSWORD = [os.getenv(i) for i in ('ENERGY_USER', 'ENERGY_PASS')]
 if not USERNAME or not PASSWORD:
     print('请设置环境变量 ENERGY_USER 和 ENERGY_PASS')
     exit(1)

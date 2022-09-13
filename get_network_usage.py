@@ -25,7 +25,12 @@ except (pkg_resources.DistributionNotFound, pkg_resources.VersionConflict):
     subprocess.check_call([
         sys.executable, '-m', 'pip', 'install', 'libxduauth', 'BeautifulSoup4'
     ])
-USERNAME, PASSWORD = [os.getenv(i) for i in ('PAY_USER', 'PAY_PASS')]
+try:
+    import credentials
+    USERNAME = credentials.PAY_USERNAME
+    PASSWORD = credentials.PAY_PASSWORD
+except ImportError:
+    USERNAME, PASSWORD = [os.getenv(i) for i in ('PAY_USER', 'PAY_PASS')]
 
 if not USERNAME or not PASSWORD:
     print('请设置环境变量 PAY_USER 和 PAY_PASS')

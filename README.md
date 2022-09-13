@@ -20,6 +20,15 @@
 |RS_USER/RS_PASS|get_rs_campus_recruitment|睿思校外站|
 |SPORTS_USER/SPORTS_PASS|get_sports_punch_records|对应体适能用户名和密码|
 
+---
+
+如果不想设置环境变量或者想一次性配好所有变量，可以通过编辑`credentials.py`完成：
+
+1. 首先复制`credentials.sample.py`为`credentials.py`
+2. 开始编辑`credentials.py`即可
+
+注：`credentials.py`需要和你使用的脚本在同一个路径下
+
 ### For Example
 
 在命令行直接运行：
