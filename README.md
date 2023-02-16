@@ -56,6 +56,7 @@ export IDS_PASS=密码
 * get_rs_campus_recruitment: 获取睿思论坛上的校园招聘信息
 * check_in: 2020 晨午晚检
 * get_sports_punch_records: 查询体育打卡次数
+* choice_pe_class: 体育课选课
 
 ### 备注
 
