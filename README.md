@@ -19,6 +19,7 @@
 |ENERGY_USER/ENERGY_PASS|get_electricity_balance|对应宿舍电费账户|
 |RS_USER/RS_PASS|get_rs_campus_recruitment|睿思校外站|
 |SPORTS_USER/SPORTS_PASS|get_sports_punch_records|对应体适能用户名和密码|
+|EXP_CS_PASSWORD|choose_cs_exp|计科院系统实验教学中心密码|
 
 ---
 
@@ -57,6 +58,7 @@ export IDS_PASS=密码
 * check_in: 2020 晨午晚检
 * get_sports_punch_records: 查询体育打卡次数
 * choose_pe_class: 体育课选课
+* choose_cs_exp: 计科院实验选课
 
 ### 备注
 
