@@ -66,3 +66,6 @@ RS_USERNAME = ''
 
 RS_PASSWORD = ''
 # Password for rs
+
+EXP_CS_PASSWORD = ''
+# Password for 222.25.176.4
