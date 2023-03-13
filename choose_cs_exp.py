@@ -22,6 +22,7 @@ import asyncio
 import aiohttp
 import time
 import os
+from prettytable import PrettyTable
 from bs4 import BeautifulSoup
 
 try:
@@ -61,7 +62,7 @@ async def login(session: aiohttp.ClientSession):
     if resp.status != 200:
         return
     session.cookie_jar.update_cookies(resp.cookies)
-    resp = await session.get(url=f'{BASE_URL}/student/default.php', )
+    resp = await session.get(url=f'{BASE_URL}/student/default.php')
     if resp.status != 200:
         return
     resp_text = await resp.text()
@@ -167,6 +168,31 @@ async def submit_exp_choice(session: aiohttp.ClientSession, crno: str,
         pass
 
 
+async def get_submit_res(session):
+    '''获取实验选择结果
+    '''
+    table = PrettyTable()
+    url = f'{BASE_URL}/student/showMyCourses.php'
+    print('尝试获取实验选择结果......')
+    resp = await session.get(url)
+    if resp.status == 200:
+        try:
+            soup = BeautifulSoup(await resp.text(), 'lxml')
+            rows = soup.find('table').find_all('tr')
+            for i, row in enumerate(rows):
+                if i == 0:
+                    cols = row.find_all('th')
+                    table.field_names = [col.text.strip() for col in cols]
+                else:
+                    cols = row.find_all('td')
+                    table.add_row([col.text.strip() for col in cols])
+            print(table)
+        except Exception as e:
+            print(f'获取失败：{e}')
+    else:
+        print('获取失败，请重试')
+
+
 async def main():
     async with aiohttp.ClientSession() as session:
         print('尝试登录......')
@@ -214,6 +240,7 @@ async def main():
                         task.cancel()
             if submit_flag:
                 break
+        await get_submit_res(session)
 
 
 if __name__ == '__main__':
