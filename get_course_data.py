@@ -51,5 +51,6 @@ if __name__ == "__main__":
     data = get_course_info(semesternum)
     result = [', '.join(sublist) for sublist in data]
     result = '\n'.join(result)
-    with open(f'course_data_{semesternum}.txt', 'w') as f:
+    with open(f'course_data_{semesternum}.csv', 'w') as f:
         f.write(result)
+    print(f"已将课程数据保存至course_data_{semesternum}.csv")
