@@ -1,17 +1,15 @@
+import argparse
 import os
-from libxduauth import IDSSession
-from credentials import IDS_USERNAME, IDS_PASSWORD
-from bs4 import BeautifulSoup
-import sys
 from typing import List
 
+from bs4 import BeautifulSoup
+from libxduauth import IDSSession
+
 try:
-    import credentials
-    USERNAME = credentials.IDS_USERNAME
-    PASSWORD = credentials.IDS_PASSWORD
+    from credentials import IDS_PASSWORD, IDS_USERNAME
 except ImportError:
-    USERNAME, PASSWORD = [os.getenv(i) for i in ('IDS_USER', 'IDS_PASS')]
-if not USERNAME or not PASSWORD:
+    IDS_USERNAME, IDS_PASSWORD = [os.getenv(i) for i in ('IDS_USER', 'IDS_PASS')]
+if not IDS_USERNAME or not IDS_PASSWORD:
     print('请设置环境变量 IDS_USER 和 IDS_PASS')
     exit(1)
 
@@ -23,18 +21,17 @@ session = IDSSession(LOGIN_URL, IDS_USERNAME, IDS_PASSWORD)
 
 
 def get_course_info(semesternum: int) -> List[List[str]]:
-    html = session.get(COURSE_DATA_URL,
-                       params={
-                           'semesternum': semesternum,
-                       }
-                       ).text
-    soup = BeautifulSoup(html, 'html.parser')
+    html = session.get(COURSE_DATA_URL, params={
+        'semesternum': semesternum,
+    }).text
+    soup = BeautifulSoup(html, 'lxml')
     table = soup.find('table')
-    headers = [header.get_text(strip=True) for header in table.find(  # type:ignore
-        'thead').find('tr').find_all('th')]  # type:ignore
-    data = []
-    data.append(headers)
-    for row in table.find('tbody').find_all('tr'):  # type:ignore
+    headers = [
+        header.get_text(strip=True) for header in
+        table.find('thead').find('tr').find_all('th')
+    ]
+    data = [headers]
+    for row in table.find('tbody').find_all('tr'):
         row_data = [cell.get_text(strip=True) for cell in row.find_all('td')]
         data.append(row_data)
 
@@ -42,10 +39,12 @@ def get_course_info(semesternum: int) -> List[List[str]]:
 
 
 if __name__ == "__main__":
-    semesternum = int(sys.argv[1])
-    data = get_course_info(semesternum)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("semesternum", nargs='?', type=int, default=0)
+    args = parser.parse_args()
+    data = get_course_info(args.semesternum)
     result = [', '.join(sublist) for sublist in data]
     result = '\n'.join(result)
-    with open(f'course_data_{semesternum}.csv', 'w') as f:
+    with open(f'course_data_{args.semesternum}.csv', 'w') as f:
         f.write(result)
-    print(f"已将课程数据保存至course_data_{semesternum}.csv")
+    print(f"已将课程数据保存至course_data_{args.semesternum}.csv")
