@@ -13,7 +13,7 @@
 
 |环境变量|用到这个环境变量的脚本|补充说明|
 |:-:|:-:|:-:|
-|IDS_USER/IDS_PASS|export_timetable<br>get_grades.py<br>get_borrowed_books<br>check_in|对应西电统一认证服务的用户名密码|
+|IDS_USER/IDS_PASS|export_timetable<br>get_grades.py<br>get_borrowed_books<br>check_in<br>get_course_data|对应西电统一认证服务的用户名密码|
 |WX_USER/WX_PASS|get_borrowed_books<br>get_card_balance<br>query_card_bill|由于此服务与统一认证密码保持一致，若脚本找不到这两个环境变量，则会使用IDS_USER/IDS_PASS|
 |PAY_USER/PAY_PASS|get_network_usage|对应zfw.xidian.edu.cn用户名密码，此脚本由于需要识别验证码，需要安装tesseract才能正常运行，且登陆速度可能较慢|
 |ENERGY_USER/ENERGY_PASS|get_electricity_balance|对应宿舍电费账户|
@@ -59,6 +59,7 @@ export IDS_PASS=密码
 * get_sports_punch_records: 查询体育打卡次数
 * choose_pe_class: 体育课选课
 * choose_cs_exp: 计科院实验选课
+* get_course_data:获取课程数据如签到次数，签到率等，保存为csv文件
 
 ### 备注
 
