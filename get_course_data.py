@@ -2,6 +2,7 @@ import os
 from libxduauth import IDSSession
 from credentials import IDS_USERNAME, IDS_PASSWORD
 from bs4 import BeautifulSoup
+import sys
 from typing import List
 
 try:
@@ -41,13 +42,7 @@ def get_course_info(semesternum: int) -> List[List[str]]:
 
 
 if __name__ == "__main__":
-    print("请输入学期数，如2023-2024第一学期：20231，输入0则获取全部学期课程信息")
-    while True:
-        try:
-            semesternum = int(input("学期数："))
-            break
-        except ValueError:
-            print("请输入正确的学期数")
+    semesternum = int(sys.argv[1])
     data = get_course_info(semesternum)
     result = [', '.join(sublist) for sublist in data]
     result = '\n'.join(result)
