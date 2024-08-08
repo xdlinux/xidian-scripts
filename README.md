@@ -92,5 +92,6 @@ echo "text=HR_news&desp=`python3 get_rs_campus_recruitment.py --markdown --urlen
 
 ## 友情链接
 
+[Traintime PDA / XDYou]([https://www.coolapk.com/apk/249065](https://github.com/BenderBlog/traintime_pda)) by @BenderBlog  
 [电表](https://www.coolapk.com/apk/249065) by @Robotxm  
 [oh-my-xdu](https://github.com/zkonge/oh-my-xdu) by @zkonge
