@@ -60,6 +60,7 @@ export IDS_PASS=密码
 * choose_pe_class: 体育课选课
 * choose_cs_exp: 计科院实验选课
 * get_course_data:获取课程数据如签到次数，签到率等，保存为csv文件
+* get_network_balance_of_current_device*: 获取当前设备的校园网流量使用情况
 
 ### 备注
 
